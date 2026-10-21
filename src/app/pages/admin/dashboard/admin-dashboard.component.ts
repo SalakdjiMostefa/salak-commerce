@@ -17,7 +17,7 @@ import { HealthService } from '../../../services/health.service';
         <div>
           <h1 class="font-serif text-3xl font-light text-stone-900">Tableau de Bord Exécutif</h1>
           <p class="text-xs sm:text-sm text-stone-500 mt-1">
-            Indicateurs de performance, synchronisation API et alertes stocks de votre boutique AURA.
+            Indicateurs de performance, synchronisation API et alertes stocks de votre boutique SALAKOMERCE.
           </p>
         </div>
         <div class="flex items-center gap-3">

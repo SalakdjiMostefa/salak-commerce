@@ -120,7 +120,7 @@ import { CreateOrderDTO, OrderDTO, OrderItemDTO } from '../../models/order.model
                   </div>
                 } @else {
                   <div class="rounded-2xl bg-stone-50 border border-stone-200/80 p-3.5 flex items-center justify-between text-xs">
-                    <span class="text-stone-600">Déjà client AURA ?</span>
+                    <span class="text-stone-600">Déjà client SALAKOMERCE ?</span>
                     <a routerLink="/login" class="font-semibold text-stone-900 hover:text-amber-900 underline">
                       Se connecter pour commander plus vite
                     </a>

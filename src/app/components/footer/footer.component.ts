@@ -77,10 +77,26 @@ import { HealthService } from '../../services/health.service';
 
           <!-- Colonne Marque (2 cols) -->
           <div class="lg:col-span-2">
-            <span class="font-serif text-3xl font-medium tracking-widest text-white">AURA</span>
-            <span class="block text-[10px] tracking-[0.3em] uppercase text-amber-300 font-medium mt-0.5">Cosmétiques</span>
+            <div class="flex items-center gap-3 select-none">
+              <div class="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 via-stone-800 to-stone-900 p-2 shadow-lg ring-1 ring-amber-400/40">
+                <svg class="h-full w-full text-amber-300" viewBox="0 0 48 48" fill="none">
+                  <path d="M24 4L42 24L24 44L6 24L24 4Z" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"/>
+                  <path d="M30 15C29 13.2 26 12 23 12.5C19 13.2 17.5 16.5 18.5 20C19.8 24 28.5 24.5 29.2 28.5C29.8 32.5 26 35 21.8 35C18 35 15.5 33 14.5 30.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="24" cy="4" r="1.5" fill="currentColor"/>
+                  <circle cx="24" cy="44" r="1.5" fill="currentColor"/>
+                </svg>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-serif text-2xl font-semibold tracking-[0.16em] text-white">
+                  SALAK<span class="font-light text-amber-300">OMERCE</span>
+                </span>
+                <span class="text-[9px] tracking-[0.32em] uppercase text-amber-400/90 font-semibold -mt-0.5">
+                  Haute Beauté & Rituels
+                </span>
+              </div>
+            </div>
             <p class="mt-4 text-xs sm:text-sm text-stone-400 max-w-sm leading-relaxed">
-              Maison de haute cosmétique végétale. Nous allions l'alchimie botanique et les technologies cellulaires de pointe pour magnifier votre beauté originelle en toute sérénité.
+              Maison de haute cosmétique végétale. SALAKOMERCE allie l'alchimie botanique et les technologies cellulaires d'exception pour sublimer votre peau avec prestige et pureté.
             </p>
             <div class="mt-6 flex space-x-4 text-stone-400">
               <span class="hover:text-amber-300 transition-colors cursor-pointer text-xs font-medium">Instagram</span>
@@ -148,7 +164,7 @@ import { HealthService } from '../../services/health.service';
 
         <!-- Bas de page -->
         <div class="mt-12 border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
-          <p>© 2026 AURA Cosmétiques. Tous droits réservés.</p>
+          <p>© 2026 SALAKOMERCE. Tous droits réservés.</p>
 
           <!-- Statut API Backend Live -->
           <div class="flex items-center gap-2 text-[11px] bg-stone-900/90 px-3 py-1.5 rounded-full border border-stone-800">

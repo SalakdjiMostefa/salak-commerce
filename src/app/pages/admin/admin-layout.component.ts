@@ -14,9 +14,15 @@ import { HealthService } from '../../services/health.service';
       <div class="border-b border-stone-200 bg-white">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
-            <div class="flex items-center space-x-4">
-              <span class="font-serif text-xl font-bold tracking-wider text-stone-900">
-                AURA <span class="text-xs font-sans font-semibold uppercase text-amber-800 tracking-normal px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">Admin Studio</span>
+            <div class="flex items-center space-x-3">
+              <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-stone-900 to-amber-950 p-1.5 shadow-sm ring-1 ring-amber-400/40">
+                <svg class="h-full w-full text-amber-300" viewBox="0 0 48 48" fill="none">
+                  <path d="M24 4L42 24L24 44L6 24L24 4Z" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"/>
+                  <path d="M30 15C29 13.2 26 12 23 12.5C19 13.2 17.5 16.5 18.5 20C19.8 24 28.5 24.5 29.2 28.5C29.8 32.5 26 35 21.8 35C18 35 15.5 33 14.5 30.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="font-serif text-lg font-bold tracking-wider text-stone-900 flex items-center gap-2">
+                SALAKOMERCE <span class="text-xs font-sans font-semibold uppercase text-amber-800 tracking-normal px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200">Admin Studio</span>
               </span>
 
               <!-- Indicateur API Live -->

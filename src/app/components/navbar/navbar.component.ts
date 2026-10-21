@@ -42,15 +42,34 @@ import { AuthService } from '../../services/auth.service';
           </button>
         </div>
 
-        <!-- Logo AURA Cosmétiques -->
+        <!-- Logo SALAKOMERCE Luxury Emblem -->
         <div class="flex items-center">
-          <a routerLink="/" class="group flex flex-col items-center sm:items-start select-none">
-            <span class="font-serif text-2xl sm:text-3xl font-medium tracking-widest text-stone-900 group-hover:text-amber-800 transition-colors">
-              AURA
-            </span>
-            <span class="text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-stone-500 font-medium -mt-1">
-              Cosmétiques
-            </span>
+          <a routerLink="/" class="group flex items-center gap-2.5 sm:gap-3 select-none">
+            <!-- Emblème Monogramme Luxe "S" -->
+            <div class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-stone-900 via-stone-900 to-amber-950 p-1.5 sm:p-2 shadow-md shadow-stone-900/10 ring-1 ring-amber-400/35 group-hover:ring-amber-400/70 group-hover:scale-105 transition-all duration-300">
+              <svg class="h-full w-full text-amber-300" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Facette Diamant Royale -->
+                <path d="M24 4L42 24L24 44L6 24L24 4Z" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"/>
+                <!-- Monogramme "S" Élégant & Volute Botanique -->
+                <path d="M30 15C29 13.2 26 12 23 12.5C19 13.2 17.5 16.5 18.5 20C19.8 24 28.5 24.5 29.2 28.5C29.8 32.5 26 35 21.8 35C18 35 15.5 33 14.5 30.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="4" r="1.5" fill="currentColor"/>
+                <circle cx="24" cy="44" r="1.5" fill="currentColor"/>
+              </svg>
+              <!-- Étincelle dorée scintillante -->
+              <span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+            </div>
+
+            <!-- Typographie Haute Couture -->
+            <div class="flex flex-col">
+              <span class="font-serif text-xl sm:text-2xl font-semibold tracking-[0.16em] text-stone-900 group-hover:text-amber-900 transition-colors">
+                SALAK<span class="font-light text-amber-800">OMERCE</span>
+              </span>
+              <span class="text-[8px] sm:text-[8.5px] tracking-[0.32em] uppercase text-stone-500 font-semibold -mt-1 flex items-center gap-1">
+                <span>HAUTE BEAUTÉ</span>
+                <span class="text-amber-500 font-normal">✦</span>
+                <span>PARIS</span>
+              </span>
+            </div>
           </a>
         </div>
 
@@ -232,7 +251,7 @@ import { AuthService } from '../../services/auth.service';
                         </span>
                       } @else {
                         <span class="inline-flex items-center gap-1 font-semibold text-stone-700 bg-white px-2 py-0.5 rounded-md border border-stone-200">
-                          <span>✦</span> Membre Privilège AURA
+                          <span>✦</span> Membre Privilège SALAKOMERCE
                         </span>
                       }
                       <span class="text-emerald-700 font-medium">En ligne</span>

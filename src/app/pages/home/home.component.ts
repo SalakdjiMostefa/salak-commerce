@@ -73,7 +73,7 @@ import { ProductDTO } from '../../models/product.model';
               <div class="relative mx-auto aspect-[4/5] max-w-sm sm:max-w-md overflow-hidden rounded-3xl shadow-2xl ring-1 ring-stone-900/10">
                 <img
                   src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=1000&q=80"
-                  alt="Soin haute cosmétique naturelle AURA"
+                  alt="Soin haute cosmétique naturelle SALAKOMERCE"
                   class="h-full w-full object-cover object-center"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-stone-950/60 via-transparent to-transparent"></div>
@@ -210,7 +210,7 @@ import { ProductDTO } from '../../models/product.model';
                 La nature sublimée par une science d'avant-garde
               </h2>
               <p class="text-stone-600 text-sm sm:text-base font-light leading-relaxed">
-                Chaque création AURA est un hommage à la résilience et à la générosité de la flore. Nous sélectionnons des plantes médicinales cueillies à maturité dans le respect des cycles lunaires, puis distillées à basse température pour préserver toute l'énergie de leurs principes actifs.
+                Chaque création SALAKOMERCE est un hommage à la résilience et à la générosité de la flore. Nous sélectionnons des plantes médicinales cueillies à maturité dans le respect des cycles lunaires, puis distillées à basse température pour préserver toute l'énergie de leurs principes actifs.
               </p>
               <div class="pt-2">
                 <a

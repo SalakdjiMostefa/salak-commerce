@@ -115,7 +115,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                 <!-- Marque & Note -->
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-800">
-                    {{ product()!.brand || 'Maison AURA' }}
+                    {{ product()!.brand || 'Maison SALAKOMERCE' }}
                   </span>
 
                   <!-- Avis étoiles -->

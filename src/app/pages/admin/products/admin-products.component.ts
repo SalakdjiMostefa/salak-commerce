@@ -421,7 +421,7 @@ export class AdminProductsComponent implements OnInit {
   private initForm(): void {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      brand: ['AURA Cosmétiques', Validators.required],
+      brand: ['Maison SALAKOMERCE', Validators.required],
       description: ['', [Validators.required, Validators.minLength(5)]],
       price: [29.00, [Validators.required, Validators.min(0)]],
       stock: [20, [Validators.required, Validators.min(0)]],
@@ -437,7 +437,7 @@ export class AdminProductsComponent implements OnInit {
     const firstCat = this.categoryService.categories()[0]?.id || 1;
     this.productForm.reset({
       name: '',
-      brand: 'AURA Cosmétiques',
+      brand: 'Maison SALAKOMERCE',
       description: '',
       price: 35.00,
       stock: 25,

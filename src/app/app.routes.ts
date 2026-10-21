@@ -6,43 +6,43 @@ export const routes: Routes = [
     path: '',
     loadComponent: () =>
       import('./pages/home/home.component').then((m) => m.HomeComponent),
-    title: 'AURA Cosmétiques — Accueil & Haute Beauté Botanique'
+    title: 'SALAKOMERCE — Accueil & Haute Beauté Botanique'
   },
   {
     path: 'catalog',
     loadComponent: () =>
       import('./pages/catalog/catalog.component').then((m) => m.CatalogComponent),
-    title: 'Catalogue & Rituels de Soins — AURA Cosmétiques'
+    title: 'Catalogue & Rituels de Soins — SALAKOMERCE'
   },
   {
     path: 'product/:id',
     loadComponent: () =>
       import('./pages/product-detail/product-detail.component').then((m) => m.ProductDetailComponent),
-    title: 'Détail du Soin — AURA Cosmétiques'
+    title: 'Détail du Soin — SALAKOMERCE'
   },
   {
     path: 'favorites',
     loadComponent: () =>
       import('./pages/favorites/favorites.component').then((m) => m.FavoritesComponent),
-    title: 'Mes Favoris — AURA Cosmétiques'
+    title: 'Mes Favoris — SALAKOMERCE'
   },
   {
     path: 'cart',
     loadComponent: () =>
       import('./pages/cart/cart.component').then((m) => m.CartComponent),
-    title: 'Mon Panier — AURA Cosmétiques'
+    title: 'Mon Panier — SALAKOMERCE'
   },
   {
     path: 'checkout',
     loadComponent: () =>
       import('./pages/checkout/checkout.component').then((m) => m.CheckoutComponent),
-    title: 'Finalisation de commande — AURA Cosmétiques'
+    title: 'Finalisation de commande — SALAKOMERCE'
   },
   {
     path: 'login',
     loadComponent: () =>
       import('./pages/auth/login/login.component').then((m) => m.LoginComponent),
-    title: 'Espace Membre & Connexion — AURA Cosmétiques'
+    title: 'Espace Membre & Connexion — SALAKOMERCE'
   },
   {
     path: 'register',

@@ -13,14 +13,28 @@ import { AuthUser } from '../../../models/auth.model';
     <div class="min-h-screen bg-gradient-to-br from-stone-100 via-rose-50/30 to-amber-50/25 flex items-center justify-center px-4 py-12 sm:py-16">
       <div class="w-full max-w-lg">
 
-        <!-- En-tête / Logo AURA -->
+        <!-- En-tête / Logo SALAKOMERCE -->
         <div class="text-center mb-8">
-          <a routerLink="/" class="inline-block group">
-            <span class="font-serif text-4xl sm:text-5xl font-light tracking-widest text-stone-900 group-hover:text-amber-900 transition-colors">AURA</span>
-            <span class="block text-[11px] tracking-[0.38em] uppercase text-amber-800 font-semibold mt-1">Cosmétiques</span>
+          <a routerLink="/" class="inline-flex flex-col items-center group select-none">
+            <!-- Emblème Monogramme Luxe "S" -->
+            <div class="relative flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-stone-900 via-stone-900 to-amber-950 p-3 shadow-xl ring-2 ring-amber-400/40 group-hover:scale-105 group-hover:ring-amber-400/70 transition-all duration-300 mb-3">
+              <svg class="h-full w-full text-amber-300" viewBox="0 0 48 48" fill="none">
+                <path d="M24 4L42 24L24 44L6 24L24 4Z" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.35"/>
+                <path d="M30 15C29 13.2 26 12 23 12.5C19 13.2 17.5 16.5 18.5 20C19.8 24 28.5 24.5 29.2 28.5C29.8 32.5 26 35 21.8 35C18 35 15.5 33 14.5 30.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="4" r="1.5" fill="currentColor"/>
+                <circle cx="24" cy="44" r="1.5" fill="currentColor"/>
+              </svg>
+              <span class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-amber-400 animate-pulse"></span>
+            </div>
+            <span class="font-serif text-3xl sm:text-4xl font-semibold tracking-[0.16em] text-stone-900 group-hover:text-amber-900 transition-colors">
+              SALAK<span class="font-light text-amber-800">OMERCE</span>
+            </span>
+            <span class="block text-[10px] tracking-[0.38em] uppercase text-amber-800 font-semibold mt-1">
+              Maison de Haute Beauté
+            </span>
           </a>
-          <p class="text-xs sm:text-sm text-stone-500 mt-3 font-light tracking-wide">
-            Haute Beauté Botanique & Rituels Précieux
+          <p class="text-xs sm:text-sm text-stone-500 mt-2 font-light tracking-wide">
+            Espace Privilège & Rituels Précieux
           </p>
         </div>
 
@@ -243,7 +257,7 @@ import { AuthUser } from '../../../models/auth.model';
                   </svg>
                   <span>Création du compte...</span>
                 } @else {
-                  <span>Créer mon compte AURA</span>
+                  <span>Créer mon compte SALAKOMERCE</span>
                 }
               </button>
             </form>
@@ -410,7 +424,7 @@ export class LoginComponent {
     this.authService.register(this.registerForm.value).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Votre compte a été créé avec succès ! Bienvenue chez AURA Cosmétiques.');
+        this.successMessage.set('Votre compte a été créé avec succès ! Bienvenue chez SALAKOMERCE.');
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1200);
