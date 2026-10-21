@@ -1,9 +1,10 @@
-// Détection automatique de l'IP pour smartphone & desktop
-const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+const isBrowser = typeof window !== 'undefined';
+// Si on tourne sur localhost ou sur l'IP Wi-Fi locale
+const isLocal = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.'));
 
 export const environment = {
-  production: false,
-  // Si vous accédez depuis un smartphone via votre IP locale (ex: 192.168.x.x:4200),
-  // l'application appellera automatiquement le backend Spring Boot sur cette même IP:8080 !
-  apiUrl: `http://${host}:8080/api`
+  production: !isLocal,
+  // En local : appel direct au port 8080
+  // En ligne (Amplify) : passe par le proxy /api
+  apiUrl: isLocal ? `http://${window.location.hostname}:8080/api` : '/api'
 };
