@@ -73,31 +73,31 @@ import { ProductService } from '../../services/product.service';
           />
         </a>
 
-        <!-- Bouton Rapide d'Ajout sur Hover (Desktop) -->
+        <!-- Bouton d'Ajout sur Hover (Desktop & Tablette) -->
         <div class="absolute inset-x-3 bottom-3 z-10 hidden sm:flex translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <button
             type="button"
             (click)="onAddToCart($event)"
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
-            class="w-full rounded-xl py-2.5 px-4 text-xs font-semibold tracking-wide uppercase shadow-lg transition-all flex items-center justify-center gap-2"
+            class="w-full rounded-xl py-3 px-4 text-xs sm:text-sm font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
             [ngClass]="{
               'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
-              'bg-emerald-600 text-white': addedAnimation(),
-              'bg-stone-300 text-stone-500 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
+              'bg-emerald-700 text-white shadow-emerald-900/30 ring-2 ring-emerald-400/50': addedAnimation(),
+              'bg-stone-200 text-stone-700 font-semibold border border-stone-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
             }"
           >
             @if (addedAnimation()) {
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span>Ajouté au panier</span>
+              <span class="text-white font-bold">✓ Ajouté au panier !</span>
             } @else if (product.status === 'RUPTURE' || product.stock === 0) {
-              <span>Indisponible</span>
+              <span class="text-stone-700 font-semibold">Indisponible</span>
             } @else {
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span>Ajout rapide</span>
+              <span class="text-white font-bold">Ajouter au panier</span>
             }
           </button>
         </div>
@@ -133,22 +133,37 @@ import { ProductService } from '../../services/product.service';
         <!-- Prix & Bouton Mobile -->
         <div class="mt-auto flex items-center justify-between pt-2 border-t border-stone-100">
           <div>
-            <span class="text-base sm:text-lg font-semibold text-stone-900">
+            <span class="text-base sm:text-lg font-bold text-stone-900">
               {{ product.price.toFixed(2) }} €
             </span>
           </div>
 
-          <!-- Bouton Ajout Panier Mobile (visible uniquement < 640px) -->
+          <!-- Bouton Ajout Panier Mobile (visible sur petits écrans < 640px) -->
           <button
             type="button"
             (click)="onAddToCart($event)"
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
-            class="flex sm:hidden h-8 w-8 items-center justify-center rounded-full bg-stone-900 text-white transition-all active:scale-95 disabled:bg-stone-200 disabled:text-stone-400"
+            class="flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm"
+            [ngClass]="{
+              'bg-stone-900 text-white hover:bg-stone-800': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
+              'bg-emerald-700 text-white ring-2 ring-emerald-400/50': addedAnimation(),
+              'bg-stone-200 text-stone-600 border border-stone-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
+            }"
             aria-label="Ajouter au panier"
           >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+            @if (addedAnimation()) {
+              <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-white font-bold">Ajouté !</span>
+            } @else if (product.status === 'RUPTURE' || product.stock === 0) {
+              <span class="text-stone-600 font-medium">Épuisé</span>
+            } @else {
+              <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span class="text-white font-bold">Ajouter</span>
+            }
           </button>
         </div>
       </div>

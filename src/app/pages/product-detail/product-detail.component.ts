@@ -201,34 +201,34 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                       type="button"
                       (click)="addToCart()"
                       [disabled]="product()!.status === 'RUPTURE' || product()!.stock === 0"
-                      class="flex-1 rounded-xl py-3.5 px-8 text-xs sm:text-sm font-semibold uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2"
+                      class="flex-1 rounded-xl py-3.5 px-6 text-sm sm:text-base font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
                       [ngClass]="{
                         'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product()!.status !== 'RUPTURE' && product()!.stock > 0 && !addedSuccess(),
-                        'bg-emerald-600 text-white': addedSuccess(),
-                        'bg-stone-200 text-stone-400 cursor-not-allowed': product()!.status === 'RUPTURE' || product()!.stock === 0
+                        'bg-emerald-700 text-white shadow-emerald-900/30 ring-2 ring-emerald-400/50': addedSuccess(),
+                        'bg-stone-200 text-stone-700 font-semibold border border-stone-300 cursor-not-allowed': product()!.status === 'RUPTURE' || product()!.stock === 0
                       }"
                     >
                       @if (addedSuccess()) {
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                         </svg>
-                        <span>Ajouté avec succès !</span>
+                        <span class="text-white font-bold">✓ Ajouté au panier !</span>
                       } @else if (product()!.status === 'RUPTURE' || product()!.stock === 0) {
-                        <span>Produit Épuisé</span>
+                        <span class="text-stone-700 font-semibold">Produit Épuisé</span>
                       } @else {
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                        <span>Ajouter au rituel ({{ (product()!.price * quantity()).toFixed(2) }} €)</span>
+                        <span class="text-white font-bold">Ajouter au panier ({{ (product()!.price * quantity()).toFixed(2) }} €)</span>
                       }
                     </button>
                   </div>
 
                   <!-- Lien d'accès direct au panier après ajout -->
                   @if (addedSuccess()) {
-                    <div class="text-center sm:text-left">
-                      <a routerLink="/cart" class="text-xs font-semibold text-amber-900 underline hover:text-amber-700">
-                        → Voir mon panier et finaliser ma commande
+                    <div class="text-center sm:text-left pt-1">
+                      <a routerLink="/cart" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-900 underline hover:text-amber-700 transition-colors">
+                        <span>→ Voir mon panier et finaliser ma commande</span>
                       </a>
                     </div>
                   }
