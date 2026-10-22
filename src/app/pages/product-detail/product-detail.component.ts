@@ -203,9 +203,9 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                       [disabled]="product()!.status === 'RUPTURE' || product()!.stock === 0"
                       class="flex-1 rounded-xl py-3.5 px-6 text-sm sm:text-base font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
                       [ngClass]="{
-                        'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product()!.status !== 'RUPTURE' && product()!.stock > 0 && !addedSuccess(),
-                        'bg-emerald-700 text-white shadow-emerald-900/30 ring-2 ring-emerald-400/50': addedSuccess(),
-                        'bg-stone-200 text-stone-700 font-semibold border border-stone-300 cursor-not-allowed': product()!.status === 'RUPTURE' || product()!.stock === 0
+                        'bg-rose-600 text-white hover:bg-rose-700 active:scale-95': product()!.status !== 'RUPTURE' && product()!.stock > 0 && !addedSuccess(),
+                        'bg-emerald-600 text-white shadow-emerald-900/30 ring-emerald-400/50': addedSuccess(),
+                        'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product()!.status === 'RUPTURE' || product()!.stock === 0
                       }"
                     >
                       @if (addedSuccess()) {

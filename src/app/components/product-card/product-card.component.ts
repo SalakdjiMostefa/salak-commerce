@@ -81,9 +81,9 @@ import { ProductService } from '../../services/product.service';
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
             class="w-full rounded-xl py-3 px-4 text-xs sm:text-sm font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
             [ngClass]="{
-              'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
-              'bg-emerald-700 text-white shadow-emerald-900/30 ring-2 ring-emerald-400/50': addedAnimation(),
-              'bg-stone-200 text-stone-700 font-semibold border border-stone-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
+              'bg-rose-600 text-white hover:bg-rose-700 active:scale-95': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
+              'bg-emerald-600 text-white shadow-emerald-900/30 ring-emerald-400/50': addedAnimation(),
+              'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
             }"
           >
             @if (addedAnimation()) {
@@ -145,9 +145,9 @@ import { ProductService } from '../../services/product.service';
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
             class="flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm"
             [ngClass]="{
-              'bg-stone-900 text-white hover:bg-stone-800': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
-              'bg-emerald-700 text-white ring-2 ring-emerald-400/50': addedAnimation(),
-              'bg-stone-200 text-stone-600 border border-stone-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
+              'bg-rose-600 text-white hover:bg-rose-700': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
+              'bg-emerald-600 text-white ring-emerald-400/50': addedAnimation(),
+              'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
             }"
             aria-label="Ajouter au panier"
           >

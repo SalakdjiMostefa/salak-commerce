@@ -1,9 +1,12 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductService } from '../../../services/product.service';
 import { CategoryService } from '../../../services/category.service';
+import { AuthService } from '../../../services/auth.service';
 import { ProductDTO, ProductStatus, CreateProductDTO } from '../../../models/product.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-products',
@@ -302,17 +305,82 @@ import { ProductDTO, ProductStatus, CreateProductDTO } from '../../../models/pro
                 </div>
               </div>
 
-              <!-- Image URL ou fichier stocké -->
+              <!-- Image Upload -->
               <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
-                  URL Image ou Nom de fichier stocké
+                <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
+                  Image du Produit
                 </label>
-                <input
-                  type="text"
-                  formControlName="imageUrl"
-                  placeholder="https://... ou nom-du-fichier.jpg"
-                  class="w-full rounded-xl border border-stone-300 p-2.5 text-xs text-stone-900 focus:border-stone-900 focus:outline-none"
-                />
+
+                <!-- Prévisualisation -->
+                @if (imagePreview()) {
+                  <div class="mb-3 relative inline-block">
+                    <img
+                      [src]="imagePreview()"
+                      alt="Aperçu"
+                      class="h-32 w-32 object-cover rounded-xl border border-stone-200 shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      (click)="clearImage()"
+                      class="absolute -top-2 -right-2 rounded-full bg-rose-600 text-white h-5 w-5 flex items-center justify-center text-[10px] font-bold hover:bg-rose-700 shadow"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                }
+
+                <!-- Zone de dépôt / bouton choisir -->
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <!-- Bouton choisir fichier (PC & mobile) -->
+                  <label
+                    class="flex-1 flex items-center justify-center gap-2 cursor-pointer rounded-xl border-2 border-dashed border-stone-300 p-3 text-xs text-stone-500 hover:border-stone-500 hover:text-stone-700 transition-colors"
+                  >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>{{ imageUploading() ? 'Upload en cours...' : 'Choisir depuis le PC' }}</span>
+                    <input
+                      #fileInputPc
+                      type="file"
+                      accept="image/*"
+                      class="hidden"
+                      (change)="onFileSelected($event)"
+                    />
+                  </label>
+
+                  <!-- Bouton prendre photo (mobile) -->
+                  <label
+                    class="flex items-center justify-center gap-2 cursor-pointer rounded-xl border border-stone-300 bg-stone-50 px-3 py-3 text-xs text-stone-600 hover:bg-stone-100 transition-colors"
+                  >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Photo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      class="hidden"
+                      (change)="onFileSelected($event)"
+                    />
+                  </label>
+                </div>
+
+                @if (imageUploadError()) {
+                  <p class="mt-1 text-[11px] text-rose-600">{{ imageUploadError() }}</p>
+                }
+
+                <!-- Fallback URL manuelle -->
+                <div class="mt-2">
+                  <p class="text-[10px] text-stone-400 mb-1">Ou entrer une URL / nom de fichier manuellement :</p>
+                  <input
+                    type="text"
+                    formControlName="imageUrl"
+                    placeholder="https://... ou nom-du-fichier.jpg"
+                    class="w-full rounded-xl border border-stone-200 bg-stone-50 p-2 text-xs text-stone-700 focus:border-stone-900 focus:outline-none"
+                  />
+                </div>
               </div>
 
               <!-- Actions Modal -->
@@ -376,6 +444,8 @@ import { ProductDTO, ProductStatus, CreateProductDTO } from '../../../models/pro
 })
 export class AdminProductsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
   readonly productService = inject(ProductService);
   readonly categoryService = inject(CategoryService);
 
@@ -383,6 +453,9 @@ export class AdminProductsComponent implements OnInit {
   readonly editingProduct = signal<ProductDTO | null>(null);
   readonly deleteTarget = signal<ProductDTO | null>(null);
   readonly isSaving = signal<boolean>(false);
+  readonly imagePreview = signal<string | null>(null);
+  readonly imageUploading = signal<boolean>(false);
+  readonly imageUploadError = signal<string | null>(null);
 
   searchFilter = '';
   statusFilter = '';
@@ -446,6 +519,8 @@ export class AdminProductsComponent implements OnInit {
       rating: 5.0,
       imageUrl: ''
     });
+    this.imagePreview.set(null);
+    this.imageUploadError.set(null);
     this.modalOpen.set(true);
   }
 
@@ -468,12 +543,66 @@ export class AdminProductsComponent implements OnInit {
       rating: product.rating,
       imageUrl: img
     });
+
+    // Afficher l'image existante en prévisualisation
+    if (img) {
+      this.imagePreview.set(this.productService.getProductImageUrl(product));
+    } else {
+      this.imagePreview.set(null);
+    }
+    this.imageUploadError.set(null);
     this.modalOpen.set(true);
   }
 
   closeModal(): void {
     this.modalOpen.set(false);
     this.editingProduct.set(null);
+    this.imagePreview.set(null);
+    this.imageUploadError.set(null);
+  }
+
+  clearImage(): void {
+    this.imagePreview.set(null);
+    this.productForm.patchValue({ imageUrl: '' });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+
+    // Prévisualisation locale immédiate
+    const reader = new FileReader();
+    reader.onload = (e) => this.imagePreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+
+    // Upload vers le backend
+    this.imageUploading.set(true);
+    this.imageUploadError.set(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const token = this.authService.getToken() || '';
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+
+    this.http.post<{ fileName: string }>(
+      `${environment.apiUrl}/products/images`,
+      formData,
+      { headers }
+    ).subscribe({
+      next: (res) => {
+        this.productForm.patchValue({ imageUrl: res.fileName });
+        this.imageUploading.set(false);
+      },
+      error: () => {
+        this.imageUploadError.set('Upload échoué. Vérifiez la connexion au serveur.');
+        this.imageUploading.set(false);
+      }
+    });
+
+    // Réinitialiser l'input pour permettre de re-sélectionner le même fichier
+    input.value = '';
   }
 
   onSubmitProduct(): void {
