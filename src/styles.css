@@ -10,6 +10,25 @@
   h1, h2, h3, .font-serif {
     font-family: 'Cormorant Garamond', Georgia, serif;
   }
+
+  html[dir="rtl"] {
+    font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3,
+  html[dir="rtl"] .font-serif {
+    font-family: 'Amiri', 'Cormorant Garamond', Georgia, serif;
+  }
+
+  /* Règle typographique essentielle pour l'arabe :
+     L'écriture arabe est cursive et liée. Tout letter-spacing/tracking sépare les lettres
+     et brise la calligraphie. On neutralise le tracking pour l'arabe sauf pour les marques latines (.brand-latin). */
+  html[dir="rtl"] *:not(.brand-latin) {
+    letter-spacing: normal !important;
+  }
 }
 
 /* Custom Scrollbar Raffinée */

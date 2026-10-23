@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
+import { TranslationService } from '../../services/translation.service';
 import { CreateOrderDTO, OrderDTO, OrderItemDTO, PaymentMethod } from '../../models/order.model';
 
 export const ALGERIA_WILAYAS = [
@@ -44,37 +45,35 @@ export const ALGERIA_WILAYAS = [
             <div>
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-emerald-100/80 text-emerald-800">
                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
-                Commande Enregistrée
+                {{ ts.t('success.badge') }}
               </span>
               <h1 class="font-serif text-3xl sm:text-4xl font-normal text-stone-900 mt-2">
-                Merci pour votre commande, {{ order.customerName }} !
+                {{ ts.t('success.thank_you', { name: order.customerName }) }}
               </h1>
               <p class="text-xs sm:text-sm text-stone-500 font-light mt-2 max-w-md mx-auto">
-                Votre rituel de beauté a été enregistré sous la référence
+                {{ ts.t('success.ref_text') }}
                 <span class="font-bold text-stone-900 font-mono">#{{ order.id }}</span>.
               </p>
             </div>
 
             <!-- ENCADRÉ PAIEMENT À LA LIVRAISON (ALGERIE) -->
-            <div class="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/50 p-5 text-left space-y-2.5">
+            <div class="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/50 p-5 text-left rtl:text-right space-y-2.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-xl">💵</span>
                   <span class="font-bold text-xs sm:text-sm text-emerald-950">
-                    Mode de Règlement : {{ selectedPaymentLabel() }}
+                    {{ ts.t('success.payment_mode') }} {{ selectedPaymentLabel() }}
                   </span>
                 </div>
                 <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">
-                  À la réception
+                  {{ ts.t('success.on_delivery_badge') }}
                 </span>
               </div>
               <p class="text-xs text-emerald-900/80 leading-relaxed">
                 @if (selectedPayment() === 'CASH_ON_DELIVERY') {
-                  Vous ne payez rien en ligne. Vous réglerez le montant total de
-                  <strong class="font-bold text-emerald-950 underline">{{ order.total.toFixed(2) }} €</strong>
-                  en espèces directement auprès du livreur lors de la remise en main propre.
+                  {{ ts.t('success.cod_instruction', { total: order.total.toFixed(2) }) }}
                 } @else {
-                  Effectuez votre virement BaridiMob vers le RIP officiel de la boutique puis confirmez l'envoi de votre reçu par SMS/WhatsApp au service client.
+                  {{ ts.t('success.baridimob_instruction') }}
                 }
               </p>
               <div class="pt-2 border-t border-emerald-200/60 flex items-center gap-2 text-[11px] text-emerald-800">
@@ -82,21 +81,20 @@ export const ALGERIA_WILAYAS = [
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span>
-                  Notre équipe logistique vous contactera par téléphone au
-                  <strong>{{ order.phone }}</strong> pour confirmer l'expédition.
+                  {{ ts.t('success.phone_contact_note', { phone: order.phone }) }}
                 </span>
               </div>
             </div>
 
             <!-- Détails Commande -->
-            <div class="rounded-2xl bg-stone-50 p-6 text-left space-y-4 border border-stone-200/80 text-xs sm:text-sm">
+            <div class="rounded-2xl bg-stone-50 p-6 text-left rtl:text-right space-y-4 border border-stone-200/80 text-xs sm:text-sm">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
                 <div>
-                  <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold">Lieu de livraison</span>
+                  <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold">{{ ts.t('success.delivery_location') }}</span>
                   <span class="font-medium text-stone-900 block mt-0.5">{{ order.address }}</span>
                 </div>
                 <div>
-                  <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold">Contact Client</span>
+                  <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold">{{ ts.t('success.client_contact') }}</span>
                   <span class="font-medium text-stone-900 block mt-0.5">{{ order.customerName }} ({{ order.email }})</span>
                   <span class="block text-stone-600 text-xs font-mono font-medium">{{ order.phone }}</span>
                 </div>
@@ -104,7 +102,7 @@ export const ALGERIA_WILAYAS = [
 
               <!-- Liste des Soins commandés -->
               <div>
-                <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold mb-2">Soins & Rituels</span>
+                <span class="text-stone-400 block text-[11px] uppercase tracking-wider font-semibold mb-2">{{ ts.t('success.items_list_title') }}</span>
                 <div class="space-y-2">
                   @for (item of order.items; track item.productId) {
                     <div class="flex justify-between items-center text-xs">
@@ -117,7 +115,7 @@ export const ALGERIA_WILAYAS = [
 
               <!-- Total Réglé -->
               <div class="pt-3 border-t border-stone-200 flex justify-between items-baseline font-bold text-sm sm:text-base text-stone-900">
-                <span>Total à régler à la livraison</span>
+                <span>{{ ts.t('success.total_due') }}</span>
                 <span class="text-lg sm:text-xl text-stone-900 font-serif">{{ order.total.toFixed(2) }} €</span>
               </div>
             </div>
@@ -127,13 +125,13 @@ export const ALGERIA_WILAYAS = [
                 routerLink="/catalog"
                 class="rounded-full bg-stone-900 px-8 py-3 text-xs font-semibold uppercase tracking-wider text-white hover:bg-stone-800 transition-all shadow-md"
               >
-                Poursuivre mes découvertes
+                {{ ts.t('success.continue_browsing') }}
               </a>
               <a
                 routerLink="/"
                 class="rounded-full border border-stone-300 bg-white px-8 py-3 text-xs font-semibold uppercase tracking-wider text-stone-700 hover:bg-stone-50 transition-all"
               >
-                Retour à l'accueil
+                {{ ts.t('success.back_home') }}
               </a>
             </div>
           </div>
@@ -145,14 +143,14 @@ export const ALGERIA_WILAYAS = [
           <!-- ======================================================== -->
           <div class="border-b border-stone-200 pb-6 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">Finalisation de Commande</span>
+              <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">{{ ts.t('checkout.title') }}</span>
               <h1 class="font-serif text-3xl sm:text-4xl font-light text-stone-900 mt-1">
-                Livraison & Paiement
+                {{ ts.t('checkout.subtitle') }}
               </h1>
             </div>
             <div class="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-1.5 rounded-full font-medium">
               <span>🇩🇿</span>
-              <span>Livraison disponible dans les 58 Wilayas d'Algérie</span>
+              <span>{{ ts.t('checkout.wilayas_badge') }}</span>
             </div>
           </div>
 
@@ -166,9 +164,9 @@ export const ALGERIA_WILAYAS = [
                 <div class="space-y-4">
                   <div class="flex items-center justify-between pb-3 border-b border-stone-100">
                     <h3 class="font-serif text-xl font-medium text-stone-900">
-                      1. Coordonnées du Destinataire
+                      {{ ts.t('checkout.step1_title') }}
                     </h3>
-                    <span class="text-[11px] text-stone-400">Étape 1 sur 3</span>
+                    <span class="text-[11px] text-stone-400">{{ ts.t('checkout.step1_badge') }}</span>
                   </div>
 
                   <!-- Info Client Connecté -->
@@ -184,7 +182,7 @@ export const ALGERIA_WILAYAS = [
                         </div>
                       </div>
                       <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
-                        Connecté
+                        {{ ts.t('checkout.connected_badge') }}
                       </span>
                     </div>
                   }
@@ -192,12 +190,12 @@ export const ALGERIA_WILAYAS = [
                   <!-- Nom Complet -->
                   <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                      Nom et Prénom <span class="text-rose-500">*</span>
+                      {{ ts.t('checkout.name_label') }} <span class="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       formControlName="customerName"
-                      placeholder="Ex: Mohamed Benali"
+                      [placeholder]="ts.t('checkout.name_placeholder')"
                       class="w-full rounded-xl border border-stone-300 bg-stone-50/50 px-4 py-2.5 text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-none transition-all"
                       [class.border-rose-400]="isFieldInvalid('customerName')"
                     />
@@ -210,17 +208,17 @@ export const ALGERIA_WILAYAS = [
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                        Numéro de Téléphone <span class="text-rose-500">*</span>
+                        {{ ts.t('checkout.phone_label') }} <span class="text-rose-500">*</span>
                       </label>
                       <input
                         type="tel"
                         formControlName="phone"
-                        placeholder="Ex: 0550 12 34 56"
+                        [placeholder]="ts.t('checkout.phone_placeholder')"
                         class="w-full rounded-xl border border-stone-300 bg-stone-50/50 px-4 py-2.5 text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-none transition-all"
                         [class.border-rose-400]="isFieldInvalid('phone')"
                       />
                       <p class="mt-1 text-[11px] text-stone-400">
-                        📞 Le livreur vous appellera sur ce numéro avant le passage.
+                        {{ ts.t('checkout.phone_hint') }}
                       </p>
                       @if (isFieldInvalid('phone')) {
                         <p class="mt-1 text-xs text-rose-600">Indiquez un numéro de téléphone valide (ex: 05xx, 06xx, 07xx).</p>
@@ -229,7 +227,7 @@ export const ALGERIA_WILAYAS = [
 
                     <div>
                       <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                        Adresse Email <span class="text-stone-400 font-normal lowercase">(facultatif)</span>
+                        {{ ts.t('checkout.email_label') }} <span class="text-stone-400 font-normal lowercase">{{ ts.t('checkout.optional') }}</span>
                       </label>
                       <input
                         type="email"
@@ -249,28 +247,28 @@ export const ALGERIA_WILAYAS = [
                 <div class="pt-6 border-t border-stone-100 space-y-4">
                   <div class="flex items-center justify-between pb-3 border-b border-stone-100">
                     <h3 class="font-serif text-xl font-medium text-stone-900">
-                      2. Destination de Livraison
+                      {{ ts.t('checkout.step2_title') }}
                     </h3>
-                    <span class="text-[11px] text-stone-400">Étape 2 sur 3</span>
+                    <span class="text-[11px] text-stone-400">{{ ts.t('checkout.step2_badge') }}</span>
                   </div>
 
                   <!-- Type de livraison (Domicile vs Stop Desk) -->
                   <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
-                      Option de réception
+                      {{ ts.t('checkout.option_reception') }}
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button
                         type="button"
                         (click)="deliveryType.set('DOMICILE')"
-                        class="p-3.5 rounded-xl border text-left transition-all flex items-center gap-3"
+                        class="p-3.5 rounded-xl border text-left rtl:text-right transition-all flex items-center gap-3"
                         [ngClass]="deliveryType() === 'DOMICILE' ? 'border-stone-900 bg-stone-900 text-white shadow-md' : 'border-stone-200 bg-stone-50/50 text-stone-800 hover:bg-stone-100'"
                       >
                         <span class="text-lg">🏠</span>
                         <div>
-                          <div class="text-xs font-bold">Livraison à domicile</div>
+                          <div class="text-xs font-bold">{{ ts.t('checkout.home_delivery') }}</div>
                           <div class="text-[11px]" [ngClass]="deliveryType() === 'DOMICILE' ? 'text-stone-300' : 'text-stone-500'">
-                            Remise en main propre
+                            {{ ts.t('checkout.home_delivery_desc') }}
                           </div>
                         </div>
                       </button>
@@ -278,14 +276,14 @@ export const ALGERIA_WILAYAS = [
                       <button
                         type="button"
                         (click)="deliveryType.set('STOP_DESK')"
-                        class="p-3.5 rounded-xl border text-left transition-all flex items-center gap-3"
+                        class="p-3.5 rounded-xl border text-left rtl:text-right transition-all flex items-center gap-3"
                         [ngClass]="deliveryType() === 'STOP_DESK' ? 'border-stone-900 bg-stone-900 text-white shadow-md' : 'border-stone-200 bg-stone-50/50 text-stone-800 hover:bg-stone-100'"
                       >
                         <span class="text-lg">📦</span>
                         <div>
-                          <div class="text-xs font-bold">Point Relais / Stop Desk</div>
+                          <div class="text-xs font-bold">{{ ts.t('checkout.stopdesk_delivery') }}</div>
                           <div class="text-[11px]" [ngClass]="deliveryType() === 'STOP_DESK' ? 'text-stone-300' : 'text-stone-500'">
-                            Bureau Yalidine / ZR Express
+                            {{ ts.t('checkout.stopdesk_delivery_desc') }}
                           </div>
                         </div>
                       </button>
@@ -296,7 +294,7 @@ export const ALGERIA_WILAYAS = [
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                        Wilaya <span class="text-rose-500">*</span>
+                        {{ ts.t('checkout.wilaya_label') }} <span class="text-rose-500">*</span>
                       </label>
                       <select
                         formControlName="wilaya"
@@ -310,12 +308,12 @@ export const ALGERIA_WILAYAS = [
 
                     <div>
                       <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                        Commune / Ville <span class="text-rose-500">*</span>
+                        {{ ts.t('checkout.commune_label') }} <span class="text-rose-500">*</span>
                       </label>
                       <input
                         type="text"
                         formControlName="commune"
-                        placeholder="Ex: Bab Ezzouar, Cheraga, Es Senia..."
+                        [placeholder]="ts.t('checkout.commune_placeholder')"
                         class="w-full rounded-xl border border-stone-300 bg-stone-50/50 px-4 py-2.5 text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-none transition-all"
                         [class.border-rose-400]="isFieldInvalid('commune')"
                       />
@@ -328,13 +326,13 @@ export const ALGERIA_WILAYAS = [
                   <!-- Adresse Précise ou Bureau Relais -->
                   <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                      {{ deliveryType() === 'DOMICILE' ? 'Adresse précise de livraison' : 'Nom du bureau relais / Stop Desk' }}
+                      {{ deliveryType() === 'DOMICILE' ? ts.t('checkout.address_home_label') : ts.t('checkout.address_stopdesk_label') }}
                       <span class="text-rose-500">*</span>
                     </label>
                     <textarea
                       rows="2"
                       formControlName="address"
-                      [placeholder]="deliveryType() === 'DOMICILE' ? 'Rue, numéro, quartier, bâtiment, repère connu...' : 'Ex: Bureau Yalidine Bab Ezzouar, ZR Express...'"
+                      [placeholder]="deliveryType() === 'DOMICILE' ? ts.t('checkout.address_home_placeholder') : ts.t('checkout.address_stopdesk_placeholder')"
                       class="w-full rounded-xl border border-stone-300 bg-stone-50/50 px-4 py-2.5 text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-none transition-all"
                       [class.border-rose-400]="isFieldInvalid('address')"
                     ></textarea>
@@ -348,9 +346,9 @@ export const ALGERIA_WILAYAS = [
                 <div class="pt-6 border-t border-stone-100 space-y-4">
                   <div class="flex items-center justify-between pb-3 border-b border-stone-100">
                     <h3 class="font-serif text-xl font-medium text-stone-900">
-                      3. Mode de Règlement
+                      {{ ts.t('checkout.step3_title') }}
                     </h3>
-                    <span class="text-[11px] text-stone-400">Étape 3 sur 3</span>
+                    <span class="text-[11px] text-stone-400">{{ ts.t('checkout.step3_badge') }}</span>
                   </div>
 
                   <div class="space-y-3">
@@ -371,14 +369,14 @@ export const ALGERIA_WILAYAS = [
                           <div>
                             <div class="flex items-center gap-2">
                               <span class="text-sm font-bold text-stone-900">
-                                Paiement à la Livraison (Cash on Delivery)
+                                {{ ts.t('checkout.cod_title') }}
                               </span>
                               <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                                Recommandé
+                                {{ ts.t('checkout.cod_recommended') }}
                               </span>
                             </div>
                             <p class="text-xs text-stone-600 mt-1 leading-relaxed">
-                              Réglez en <strong>espèces</strong> directement auprès du livreur après vérification de votre colis. Aucun paiement par carte bancaire requis.
+                              {{ ts.t('checkout.cod_desc') }}
                             </p>
                           </div>
                         </div>
@@ -408,14 +406,14 @@ export const ALGERIA_WILAYAS = [
                           <div>
                             <div class="flex items-center gap-2">
                               <span class="text-sm font-bold text-stone-900">
-                                Virement BaridiMob / CCP
+                                {{ ts.t('checkout.baridimob_title') }}
                               </span>
                               <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full">
-                                Algérie Poste
+                                {{ ts.t('checkout.baridimob_badge') }}
                               </span>
                             </div>
                             <p class="text-xs text-stone-600 mt-1 leading-relaxed">
-                              Réglez via l'application BaridiMob. Notre service client vous contactera pour valider le transfert avant l'expédition du colis.
+                              {{ ts.t('checkout.baridimob_desc') }}
                             </p>
                           </div>
                         </div>
@@ -430,9 +428,9 @@ export const ALGERIA_WILAYAS = [
 
                       @if (selectedPayment() === 'BARIDIMOB') {
                         <div class="mt-3.5 pt-3 border-t border-amber-200/80 text-xs text-amber-950 bg-amber-100/50 p-3 rounded-xl">
-                          <p class="font-semibold mb-1">Coordonnées BaridiMob officielles :</p>
+                          <p class="font-semibold mb-1">{{ ts.t('checkout.baridimob_details_title') }}</p>
                           <p class="font-mono text-stone-800 text-[11px]">RIP : 007 99999 0001234567 89</p>
-                          <p class="text-[11px] text-stone-600 mt-1">Titulaire : SALAKOMERCE Cosmétiques</p>
+                          <p class="text-[11px] text-stone-600 mt-1">{{ ts.t('checkout.baridimob_holder') }}</p>
                         </div>
                       }
                     </div>
@@ -464,23 +462,23 @@ export const ALGERIA_WILAYAS = [
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      <span>Enregistrement de votre commande...</span>
+                      <span>{{ ts.t('checkout.submitting_btn') }}</span>
                     } @else {
                       <svg class="h-5 w-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7" />
                       </svg>
                       <span>
                         @if (selectedPayment() === 'CASH_ON_DELIVERY') {
-                          Commander avec Paiement à la Livraison ({{ cartService.total().toFixed(2) }} €)
+                          {{ ts.t('checkout.submit_cod_btn', { total: cartService.total().toFixed(2) }) }}
                         } @else {
-                          Valider la Commande BaridiMob ({{ cartService.total().toFixed(2) }} €)
+                          {{ ts.t('checkout.submit_baridimob_btn', { total: cartService.total().toFixed(2) }) }}
                         }
                       </span>
                     }
                   </button>
 
                   <p class="text-center text-[11px] text-stone-500 mt-2.5">
-                    🔒 Commande sans paiement en ligne • Paiement en espèces lors de la livraison
+                    {{ ts.t('checkout.security_note') }}
                   </p>
                 </div>
 
@@ -491,8 +489,8 @@ export const ALGERIA_WILAYAS = [
             <div class="lg:col-span-5">
               <div class="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm space-y-6 sticky top-8">
                 <h3 class="font-serif text-xl font-medium text-stone-900 pb-3 border-b border-stone-100 flex items-center justify-between">
-                  <span>Votre Rituel</span>
-                  <span class="text-xs font-sans text-stone-400 font-normal">({{ cartService.totalCount() }} articles)</span>
+                  <span>{{ ts.t('checkout.summary_title') }}</span>
+                  <span class="text-xs font-sans text-stone-400 font-normal">({{ cartService.totalCount() }} {{ ts.t('checkout.summary_articles') }})</span>
                 </h3>
 
                 <!-- Mini Liste Articles -->
@@ -513,19 +511,19 @@ export const ALGERIA_WILAYAS = [
                 <!-- Totaux -->
                 <div class="pt-4 border-t border-stone-200 space-y-2 text-xs text-stone-600">
                   <div class="flex justify-between">
-                    <span>Sous-total</span>
+                    <span>{{ ts.t('checkout.summary_subtotal') }}</span>
                     <span class="font-semibold text-stone-900">{{ cartService.subtotal().toFixed(2) }} €</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span>Frais de livraison</span>
+                    <span>{{ ts.t('checkout.summary_shipping') }}</span>
                     @if (cartService.shippingFee() === 0) {
-                      <span class="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-xs">Offerts</span>
+                      <span class="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-xs">{{ ts.t('checkout.summary_shipping_free') }}</span>
                     } @else {
                       <span class="font-semibold text-stone-900">{{ cartService.shippingFee().toFixed(2) }} €</span>
                     }
                   </div>
                   <div class="pt-3 border-t border-stone-200 flex justify-between items-baseline text-base font-bold text-stone-900">
-                    <span>Total à régler à la réception</span>
+                    <span>{{ ts.t('checkout.summary_total') }}</span>
                     <span class="text-xl font-serif text-stone-900">{{ cartService.total().toFixed(2) }} €</span>
                   </div>
                 </div>
@@ -534,21 +532,21 @@ export const ALGERIA_WILAYAS = [
                 <div class="rounded-2xl bg-stone-50 border border-stone-200/80 p-3.5 space-y-2 text-[11px] text-stone-600">
                   <div class="flex items-center gap-2">
                     <span class="text-emerald-600 font-bold">✓</span>
-                    <span>Paiement en espèces à la livraison sans carte bancaire</span>
+                    <span>{{ ts.t('checkout.reassurance_1') }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="text-emerald-600 font-bold">✓</span>
-                    <span>Colis scellé et vérifiable à la réception</span>
+                    <span>{{ ts.t('checkout.reassurance_2') }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="text-emerald-600 font-bold">✓</span>
-                    <span>Confirmation téléphonique avant expédition</span>
+                    <span>{{ ts.t('checkout.reassurance_3') }}</span>
                   </div>
                 </div>
 
                 <div class="pt-2 text-center">
                   <a routerLink="/cart" class="text-xs text-stone-500 hover:text-stone-900 underline">
-                    Modifier les articles du panier
+                    {{ ts.t('checkout.modify_cart') }}
                   </a>
                 </div>
 
@@ -568,6 +566,7 @@ export class CheckoutComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly ts = inject(TranslationService);
 
   readonly wilayas = ALGERIA_WILAYAS;
   readonly deliveryType = signal<'DOMICILE' | 'STOP_DESK'>('DOMICILE');
@@ -581,8 +580,8 @@ export class CheckoutComponent implements OnInit {
 
   selectedPaymentLabel(): string {
     return this.selectedPayment() === 'CASH_ON_DELIVERY'
-      ? 'Paiement en espèces à la livraison (Cash on Delivery)'
-      : 'Virement BaridiMob / CCP';
+      ? this.ts.t('checkout.cod_title')
+      : this.ts.t('checkout.baridimob_title');
   }
 
   ngOnInit(): void {

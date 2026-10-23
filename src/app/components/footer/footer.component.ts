@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HealthService } from '../../services/health.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-footer',
@@ -23,8 +24,8 @@ import { HealthService } from '../../services/health.service';
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Livraison 58 Wilayas</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Expédition soignée à domicile ou en point relais (Stop Desk) partout en Algérie.</p>
+                <h4 class="text-sm font-semibold text-white">{{ ts.t('footer.pil_1_title') }}</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">{{ ts.t('footer.pil_1_desc') }}</p>
               </div>
             </div>
 
@@ -36,8 +37,8 @@ import { HealthService } from '../../services/health.service';
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Formules Nobles & Pures</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Extraits botaniques certifiés bio, testés dermatologiquement sans cruauté.</p>
+                <h4 class="text-sm font-semibold text-white">{{ ts.t('footer.pil_2_title') }}</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">{{ ts.t('footer.pil_2_desc') }}</p>
               </div>
             </div>
 
@@ -49,8 +50,8 @@ import { HealthService } from '../../services/health.service';
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Paiement à la Livraison</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Réglez en espèces directement auprès du livreur à la réception de votre colis ou via BaridiMob.</p>
+                <h4 class="text-sm font-semibold text-white">{{ ts.t('footer.pil_3_title') }}</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">{{ ts.t('footer.pil_3_desc') }}</p>
               </div>
             </div>
 
@@ -62,8 +63,8 @@ import { HealthService } from '../../services/health.service';
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Service Client Dédié</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Nos esthéticiennes vous conseillent avec bienveillance du lundi au samedi.</p>
+                <h4 class="text-sm font-semibold text-white">{{ ts.t('footer.pil_4_title') }}</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">{{ ts.t('footer.pil_4_desc') }}</p>
               </div>
             </div>
 
@@ -96,7 +97,7 @@ import { HealthService } from '../../services/health.service';
               </div>
             </div>
             <p class="mt-4 text-xs sm:text-sm text-stone-400 max-w-sm leading-relaxed">
-              Maison de haute cosmétique végétale. SALAKOMERCE allie l'alchimie botanique et les technologies cellulaires d'exception pour sublimer votre peau avec prestige et pureté.
+              {{ ts.t('footer.tagline') }}
             </p>
             <div class="mt-6 flex space-x-4 text-stone-400">
               <span class="hover:text-amber-300 transition-colors cursor-pointer text-xs font-medium">Instagram</span>
@@ -199,6 +200,7 @@ import { HealthService } from '../../services/health.service';
   `
 })
 export class FooterComponent {
+  readonly ts = inject(TranslationService);
   readonly healthService = inject(HealthService);
   emailSubscription = '';
   readonly subscribed = signal<boolean>(false);

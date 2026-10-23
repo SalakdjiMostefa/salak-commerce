@@ -5,6 +5,7 @@ import { ProductDTO } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { ProductService } from '../../services/product.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-product-card',
@@ -21,18 +22,18 @@ import { ProductService } from '../../services/product.service';
           @switch (product.status) {
             @case ('NOUVEAU') {
               <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20 shadow-sm backdrop-blur-sm">
-                ✦ Nouveauté
+                {{ ts.t('common.new_badge') }}
               </span>
             }
             @case ('RUPTURE') {
               <span class="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 ring-1 ring-inset ring-rose-600/20 shadow-sm backdrop-blur-sm">
-                Épuisé
+                {{ ts.t('common.out_of_stock') }}
               </span>
             }
             @case ('EN_STOCK') {
               @if (product.stock <= 5 && product.stock > 0) {
                 <span class="inline-flex items-center rounded-full bg-orange-50 px-2.5 py-1 text-xs font-medium text-orange-700 ring-1 ring-inset ring-orange-600/20 shadow-sm backdrop-blur-sm">
-                  Plus que {{ product.stock }} en stock
+                  {{ ts.t('common.only_left', { count: product.stock }) }}
                 </span>
               }
             }
@@ -90,14 +91,14 @@ import { ProductService } from '../../services/product.service';
               <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span class="text-white font-bold">✓ Ajouté au panier !</span>
+              <span class="text-white font-bold">✓ {{ ts.t('common.added') }}</span>
             } @else if (product.status === 'RUPTURE' || product.stock === 0) {
-              <span class="text-stone-700 font-semibold">Indisponible</span>
+              <span class="text-stone-700 font-semibold">{{ ts.t('common.out_of_stock') }}</span>
             } @else {
               <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span class="text-white font-bold">Ajouter au panier</span>
+              <span class="text-white font-bold">{{ ts.t('common.add_to_cart') }}</span>
             }
           </button>
         </div>
@@ -155,14 +156,14 @@ import { ProductService } from '../../services/product.service';
               <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span class="text-white font-bold">Ajouté !</span>
+              <span class="text-white font-bold">{{ ts.t('common.added') }}</span>
             } @else if (product.status === 'RUPTURE' || product.stock === 0) {
-              <span class="text-stone-600 font-medium">Épuisé</span>
+              <span class="text-stone-600 font-medium">{{ ts.t('common.out_of_stock') }}</span>
             } @else {
               <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              <span class="text-white font-bold">Ajouter</span>
+              <span class="text-white font-bold">{{ ts.t('common.add_to_cart') }}</span>
             }
           </button>
         </div>
@@ -173,6 +174,7 @@ import { ProductService } from '../../services/product.service';
 export class ProductCardComponent {
   @Input({ required: true }) product!: ProductDTO;
 
+  readonly ts = inject(TranslationService);
   readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);

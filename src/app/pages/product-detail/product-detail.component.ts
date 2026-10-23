@@ -6,6 +6,7 @@ import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { ProductDTO } from '../../models/product.model';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -16,13 +17,13 @@ import { ProductCardComponent } from '../../components/product-card/product-card
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <!-- Fil d'Ariane (Breadcrumb) -->
-        <nav class="mb-8 flex items-center space-x-2 text-xs text-stone-500 font-light">
-          <a routerLink="/" class="hover:text-stone-900 transition-colors">Accueil</a>
+        <nav class="mb-8 flex items-center space-x-2 text-xs text-stone-500 font-light rtl:space-x-reverse">
+          <a routerLink="/" class="hover:text-stone-900 transition-colors">{{ ts.t('detail.breadcrumb_home') }}</a>
           <span>/</span>
-          <a routerLink="/catalog" class="hover:text-stone-900 transition-colors">Catalogue</a>
+          <a routerLink="/catalog" class="hover:text-stone-900 transition-colors">{{ ts.t('detail.breadcrumb_catalog') }}</a>
           <span>/</span>
           <span class="text-stone-900 font-medium truncate max-w-xs sm:max-w-md">
-            {{ product()?.name || 'Détail du Soin' }}
+            {{ product()?.name || ts.t('detail.breadcrumb_default') }}
           </span>
         </nav>
 
@@ -53,16 +54,16 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                   />
 
                   <!-- Badges Statut -->
-                  <div class="absolute left-4 top-4 z-10 flex flex-col gap-1.5">
+                  <div class="absolute left-4 rtl:left-auto rtl:right-4 top-4 z-10 flex flex-col gap-1.5">
                     @switch (product()!.status) {
                       @case ('NOUVEAU') {
                         <span class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20 shadow-sm">
-                          ✦ Nouveauté Exclusive
+                          {{ ts.t('detail.new_badge') }}
                         </span>
                       }
                       @case ('RUPTURE') {
                         <span class="inline-flex items-center rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 ring-1 ring-inset ring-rose-600/20 shadow-sm">
-                          Épuisé
+                          {{ ts.t('detail.out_of_stock_badge') }}
                         </span>
                       }
                     }
@@ -72,7 +73,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                   <button
                     type="button"
                     (click)="toggleFavorite()"
-                    class="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-stone-700 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110 active:scale-95"
+                    class="absolute right-4 rtl:right-auto rtl:left-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-stone-700 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110 active:scale-95"
                     [class.text-rose-600]="isFavorite()"
                     [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'"
                   >
@@ -115,7 +116,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                 <!-- Marque & Note -->
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-800">
-                    {{ product()!.brand || 'Maison SALAKOMERCE' }}
+                    {{ product()!.brand || ts.t('detail.brand') }}
                   </span>
 
                   <!-- Avis étoiles -->
@@ -133,7 +134,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                       }
                     </div>
                     <span class="text-xs font-semibold text-stone-800">{{ (product()!.rating || 5).toFixed(1) }}/5</span>
-                    <span class="text-xs text-stone-400">(48 avis)</span>
+                    <span class="text-xs text-stone-400">{{ ts.t('detail.reviews_count', { count: 48 }) }}</span>
                   </div>
                 </div>
 
@@ -147,20 +148,20 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                   <span class="text-3xl font-semibold text-stone-900">
                     {{ product()!.price.toFixed(2) }} €
                   </span>
-                  <span class="text-xs text-stone-400 font-light">TVA incluse</span>
+                  <span class="text-xs text-stone-400 font-light">{{ ts.t('detail.tax_included') }}</span>
                 </div>
 
                 <!-- Disponibilité & Stock -->
                 <div class="flex items-center gap-2 text-xs">
                   @if (product()!.status === 'RUPTURE' || product()!.stock === 0) {
                     <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
-                    <span class="font-medium text-rose-700">Momentanément indisponible</span>
+                    <span class="font-medium text-rose-700">{{ ts.t('detail.out_of_stock') }}</span>
                   } @else if (product()!.stock <= 5) {
                     <span class="h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span class="font-medium text-amber-700">Stock très limité : plus que {{ product()!.stock }} unités</span>
+                    <span class="font-medium text-amber-700">{{ ts.t('detail.stock_limited', { count: product()!.stock }) }}</span>
                   } @else {
                     <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-                    <span class="font-medium text-emerald-700">En stock ({{ product()!.stock }} exemplaires disponibles)</span>
+                    <span class="font-medium text-emerald-700">{{ ts.t('detail.in_stock', { count: product()!.stock }) }}</span>
                   }
                 </div>
 
@@ -212,23 +213,23 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                         </svg>
-                        <span class="text-white font-bold">✓ Ajouté au panier !</span>
+                        <span class="text-white font-bold">{{ ts.t('detail.added_success') }}</span>
                       } @else if (product()!.status === 'RUPTURE' || product()!.stock === 0) {
-                        <span class="text-stone-700 font-semibold">Produit Épuisé</span>
+                        <span class="text-stone-700 font-semibold">{{ ts.t('detail.out_of_stock_badge') }}</span>
                       } @else {
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                        <span class="text-white font-bold">Ajouter au panier ({{ (product()!.price * quantity()).toFixed(2) }} €)</span>
+                        <span class="text-white font-bold">{{ ts.t('detail.add_to_cart_price', { total: (product()!.price * quantity()).toFixed(2) }) }}</span>
                       }
                     </button>
                   </div>
 
                   <!-- Lien d'accès direct au panier après ajout -->
                   @if (addedSuccess()) {
-                    <div class="text-center sm:text-left pt-1">
+                    <div class="text-center sm:text-left rtl:sm:text-right pt-1">
                       <a routerLink="/cart" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-900 underline hover:text-amber-700 transition-colors">
-                        <span>→ Voir mon panier et finaliser ma commande</span>
+                        <span>{{ ts.t('detail.view_cart_cta') }}</span>
                       </a>
                     </div>
                   }
@@ -238,15 +239,15 @@ import { ProductCardComponent } from '../../components/product-card/product-card
                 <div class="rounded-2xl bg-stone-50/80 p-4 border border-stone-200/60 space-y-2.5 text-xs text-stone-600">
                   <div class="flex items-center gap-2.5">
                     <span class="text-amber-800 font-bold">✓</span>
-                    <span>Livraison offerte en France métropolitaine dès 50€ d'achat</span>
+                    <span>{{ ts.t('detail.reassurance_1') }}</span>
                   </div>
                   <div class="flex items-center gap-2.5">
                     <span class="text-amber-800 font-bold">✓</span>
-                    <span>Flacon en verre recyclable & formule naturelle 98.7%</span>
+                    <span>{{ ts.t('detail.reassurance_2') }}</span>
                   </div>
                   <div class="flex items-center gap-2.5">
                     <span class="text-amber-800 font-bold">✓</span>
-                    <span>Retours gratuits sous 14 jours si non ouvert</span>
+                    <span>{{ ts.t('detail.reassurance_3') }}</span>
                   </div>
                 </div>
 
@@ -259,9 +260,9 @@ import { ProductCardComponent } from '../../components/product-card/product-card
           @if (relatedProducts().length > 0) {
             <div class="mt-16">
               <div class="mb-8">
-                <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">Complétez Votre Rituel</span>
+                <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">{{ ts.t('detail.brand') }}</span>
                 <h2 class="font-serif text-2xl sm:text-3xl font-normal text-stone-900 mt-1">
-                  Soins Associés & Complémentaires
+                  {{ ts.t('detail.related_title') }}
                 </h2>
               </div>
 
@@ -275,14 +276,14 @@ import { ProductCardComponent } from '../../components/product-card/product-card
         } @else {
           <!-- Produit non trouvé -->
           <div class="rounded-3xl border border-stone-200 bg-white p-12 text-center">
-            <h2 class="font-serif text-2xl font-medium text-stone-900">Produit introuvable</h2>
-            <p class="text-sm text-stone-500 mt-2">Le soin que vous recherchez n'existe pas ou a été retiré.</p>
+            <h2 class="font-serif text-2xl font-medium text-stone-900">{{ ts.t('catalog.empty_title') }}</h2>
+            <p class="text-sm text-stone-500 mt-2">{{ ts.t('catalog.empty_desc') }}</p>
             <div class="mt-6">
               <a
                 routerLink="/catalog"
                 class="rounded-full bg-stone-900 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-stone-800"
               >
-                Retourner au catalogue
+                {{ ts.t('common.explore') }}
               </a>
             </div>
           </div>
@@ -298,6 +299,7 @@ export class ProductDetailComponent implements OnInit {
   readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);
+  readonly ts = inject(TranslationService);
 
   readonly product = signal<ProductDTO | null>(null);
   readonly loading = signal<boolean>(true);

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-cart',
@@ -15,9 +16,9 @@ import { ProductService } from '../../services/product.service';
         <!-- En-tête Panier -->
         <div class="border-b border-stone-200 pb-6 mb-8 flex items-baseline justify-between">
           <div>
-            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">Votre Sélection</span>
+            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">{{ ts.t('cart.selection') }}</span>
             <h1 class="font-serif text-3xl sm:text-4xl font-light text-stone-900 mt-1">
-              Mon Panier de Soins
+              {{ ts.t('cart.title') }}
             </h1>
           </div>
           @if (!cartService.isEmpty()) {
@@ -26,7 +27,7 @@ import { ProductService } from '../../services/product.service';
               (click)="cartService.clearCart()"
               class="text-xs text-rose-600 hover:text-rose-800 font-medium underline"
             >
-              Vider le panier
+              {{ ts.t('cart.clear') }}
             </button>
           }
         </div>
@@ -39,16 +40,16 @@ import { ProductService } from '../../services/product.service';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
-            <h2 class="font-serif text-2xl sm:text-3xl font-medium text-stone-900">Votre panier est vide</h2>
+            <h2 class="font-serif text-2xl sm:text-3xl font-medium text-stone-900">{{ ts.t('cart.empty_title') }}</h2>
             <p class="text-xs sm:text-sm text-stone-500 font-light mt-3 leading-relaxed">
-              Laissez-vous tenter par nos créations botaniques et offrez à votre peau un rituel sur-mesure d'exception.
+              {{ ts.t('cart.empty_desc') }}
             </p>
             <div class="mt-8">
               <a
                 routerLink="/catalog"
                 class="inline-flex rounded-full bg-stone-900 px-8 py-3.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white hover:bg-stone-800 shadow-lg transition-all"
               >
-                Découvrir nos soins
+                {{ ts.t('cart.discover') }}
               </a>
             </div>
           </div>
@@ -169,10 +170,10 @@ import { ProductService } from '../../services/product.service';
                   routerLink="/catalog"
                   class="inline-flex items-center gap-2 text-xs font-semibold text-stone-600 hover:text-stone-950 transition-colors"
                 >
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-4 w-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                   </svg>
-                  <span>Continuer mes achats</span>
+                  <span>{{ ts.t('common.back') }}</span>
                 </a>
               </div>
 
@@ -183,36 +184,31 @@ import { ProductService } from '../../services/product.service';
               <div class="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8 shadow-sm space-y-6 sticky top-28">
 
                 <h3 class="font-serif text-xl font-medium text-stone-900 pb-3 border-b border-stone-100">
-                  Récapitulatif de commande
+                  {{ ts.t('cart.summary') }}
                 </h3>
 
                 <!-- Lignes de calcul -->
                 <div class="space-y-3 text-xs sm:text-sm text-stone-600">
                   <div class="flex justify-between">
-                    <span>Sous-total ({{ cartService.totalCount() }} articles)</span>
+                    <span>{{ ts.t('common.subtotal') }} ({{ cartService.totalCount() }})</span>
                     <span class="font-semibold text-stone-900">{{ cartService.subtotal().toFixed(2) }} €</span>
                   </div>
 
                   <div class="flex justify-between items-center">
-                    <span>Frais de livraison</span>
+                    <span>{{ ts.t('common.shipping') }}</span>
                     @if (cartService.shippingFee() === 0) {
                       <span class="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-xs">
-                        Offerte
+                        {{ ts.t('common.shipping_free') }}
                       </span>
                     } @else {
                       <span class="font-semibold text-stone-900">{{ cartService.shippingFee().toFixed(2) }} €</span>
                     }
                   </div>
-
-                  <div class="flex justify-between text-[11px] text-stone-400">
-                    <span>TVA incluse</span>
-                    <span>{{ (cartService.subtotal() * 0.20).toFixed(2) }} €</span>
-                  </div>
                 </div>
 
                 <!-- Total Final -->
                 <div class="pt-4 border-t border-stone-200 flex justify-between items-baseline">
-                  <span class="text-base font-semibold text-stone-900">Total à régler</span>
+                  <span class="text-base font-semibold text-stone-900">{{ ts.t('common.total') }}</span>
                   <span class="text-2xl font-bold text-stone-900">{{ cartService.total().toFixed(2) }} €</span>
                 </div>
 
@@ -221,18 +217,18 @@ import { ProductService } from '../../services/product.service';
                   routerLink="/checkout"
                   class="block w-full text-center rounded-xl bg-stone-900 py-3.5 px-6 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white shadow-xl hover:bg-stone-800 transition-all active:scale-95"
                 >
-                  Valider la commande
+                  {{ ts.t('cart.checkout_btn') }}
                 </a>
 
                 <!-- Réassurance -->
                 <div class="pt-4 border-t border-stone-100 space-y-2 text-[11px] text-stone-500">
                   <div class="flex items-center gap-2">
                     <span class="text-emerald-600">💵</span>
-                    <span class="font-medium text-stone-700">Paiement à la livraison (Cash on Delivery) ou BaridiMob</span>
+                    <span class="font-medium text-stone-700">{{ ts.t('checkout.payment_cod') }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="text-amber-700">🚚</span>
-                    <span>Livraison rapide dans les 58 Wilayas d'Algérie</span>
+                    <span>{{ ts.t('cart.delivery_notice') }}</span>
                   </div>
                 </div>
 
@@ -247,6 +243,7 @@ import { ProductService } from '../../services/product.service';
   `
 })
 export class CartComponent {
+  readonly ts = inject(TranslationService);
   readonly cartService = inject(CartService);
   readonly productService = inject(ProductService);
 }
