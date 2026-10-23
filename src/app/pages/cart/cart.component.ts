@@ -227,12 +227,12 @@ import { ProductService } from '../../services/product.service';
                 <!-- Réassurance -->
                 <div class="pt-4 border-t border-stone-100 space-y-2 text-[11px] text-stone-500">
                   <div class="flex items-center gap-2">
-                    <span class="text-emerald-600">🔒</span>
-                    <span>Paiement 100% sécurisé et crypté SSL</span>
+                    <span class="text-emerald-600">💵</span>
+                    <span class="font-medium text-stone-700">Paiement à la livraison (Cash on Delivery) ou BaridiMob</span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-amber-700">📦</span>
-                    <span>Colis soigné avec 3 échantillons offerts</span>
+                    <span class="text-amber-700">🚚</span>
+                    <span>Livraison rapide dans les 58 Wilayas d'Algérie</span>
                   </div>
                 </div>
 

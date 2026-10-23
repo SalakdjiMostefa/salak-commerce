@@ -23,8 +23,8 @@ import { HealthService } from '../../services/health.service';
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Livraison Offerte</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Dès 50€ d'achat partout en France. Expédition soignée sous 24h.</p>
+                <h4 class="text-sm font-semibold text-white">Livraison 58 Wilayas</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Expédition soignée à domicile ou en point relais (Stop Desk) partout en Algérie.</p>
               </div>
             </div>
 
@@ -41,16 +41,16 @@ import { HealthService } from '../../services/health.service';
               </div>
             </div>
 
-            <!-- Pilier 3 : Paiement Sécurisé -->
+            <!-- Pilier 3 : Paiement à la Livraison -->
             <div class="flex items-start gap-4">
               <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-stone-800 text-amber-300">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <div>
-                <h4 class="text-sm font-semibold text-white">Paiement 100% Sécurisé</h4>
-                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Transactions cryptées SSL avec Visa, MasterCard, Carte Bancaire et Apple Pay.</p>
+                <h4 class="text-sm font-semibold text-white">Paiement à la Livraison</h4>
+                <p class="mt-1 text-xs text-stone-400 leading-relaxed">Réglez en espèces directement auprès du livreur à la réception de votre colis ou via BaridiMob.</p>
               </div>
             </div>
 

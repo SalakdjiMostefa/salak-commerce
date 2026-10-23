@@ -17,6 +17,8 @@ export interface OrderItemDTO {
   image?: string;
 }
 
+export type PaymentMethod = 'CASH_ON_DELIVERY' | 'BARIDIMOB';
+
 export interface OrderDTO {
   id: number;
   customerName: string;
@@ -27,6 +29,7 @@ export interface OrderDTO {
   total: number;
   status: OrderStatus;
   createdAt: string | Date;
+  paymentMethod?: string;
 }
 
 export interface CreateOrderDTO {
@@ -36,4 +39,7 @@ export interface CreateOrderDTO {
   address: string;
   items: OrderItemDTO[];
   total: number;
+  status?: OrderStatus;
+  paymentMethod?: string;
 }
+
