@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
+import { AuthService } from '../../services/auth.service';
 import { ProductDTO } from '../../models/product.model';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { TranslationService } from '../../services/translation.service';
@@ -53,8 +54,14 @@ import { TranslationService } from '../../services/translation.service';
                     class="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
                   />
 
-                  <!-- Badges Statut -->
-                  <div class="absolute left-4 rtl:left-auto rtl:right-4 top-4 z-10 flex flex-col gap-1.5">
+                  <!-- Badges Statut & Grossiste -->
+                  <div class="absolute left-4 rtl:left-auto rtl:right-4 top-4 z-10 flex flex-col gap-1.5 items-start">
+                    @if (isWholesaleProduct()) {
+                      <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-900 text-white px-3 py-1 text-xs font-bold shadow-md backdrop-blur-sm">
+                        <span>✦</span> {{ ts.t('wholesale.badge') }}
+                      </span>
+                    }
+
                     @switch (product()!.status) {
                       @case ('NOUVEAU') {
                         <span class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20 shadow-sm">
@@ -100,8 +107,9 @@ import { TranslationService } from '../../services/translation.service';
                       <button
                         type="button"
                         (click)="activeImage.set(img)"
-                        class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all"
-                        [ngClass]="activeImage() === img ? 'border-stone-900 ring-2 ring-stone-900/20 scale-95' : 'border-stone-200 hover:border-stone-400 opacity-70 hover:opacity-100'"
+                        class="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all"
+                        [class.border-stone-900]="activeImage() === img"
+                        [class.border-transparent]="activeImage() !== img"
                       >
                         <img [src]="img" [alt]="product()!.name" class="h-full w-full object-cover" />
                       </button>
@@ -110,13 +118,13 @@ import { TranslationService } from '../../services/translation.service';
                 }
               </div>
 
-              <!-- COLONNE DROITE : INFORMATIONS & ACHAT -->
-              <div class="lg:col-span-6 flex flex-col space-y-6">
+              <!-- COLONNE DROITE : DÉTAILS DU SOIN -->
+              <div class="lg:col-span-6 space-y-6 text-left rtl:text-right">
 
-                <!-- Marque & Note -->
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-semibold uppercase tracking-[0.25em] text-amber-800">
-                    {{ product()!.brand || ts.t('detail.brand') }}
+                <!-- En-tête Marque & Note -->
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+                  <span class="text-xs font-semibold tracking-widest uppercase text-amber-800">
+                    {{ product()!.brand }}
                   </span>
 
                   <!-- Avis étoiles -->
@@ -143,13 +151,51 @@ import { TranslationService } from '../../services/translation.service';
                   {{ product()!.name }}
                 </h1>
 
-                <!-- Prix -->
-                <div class="flex items-baseline gap-3">
-                  <span class="text-3xl font-semibold text-stone-900">
-                    {{ product()!.price.toFixed(2) }} €
-                  </span>
-                  <span class="text-xs text-stone-400 font-light">{{ ts.t('detail.tax_included') }}</span>
-                </div>
+                <!-- Bloc PRIX : Conditionnel selon statut Grossiste -->
+                @if (isWholesaleProduct()) {
+                  <!-- Bloc Tarif Professionnel Débloqué -->
+                  <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                        <span>✦</span> {{ ts.t('wholesale.badge') }}
+                      </span>
+                      <span class="text-xs text-stone-400 line-through">
+                        {{ ts.t('wholesale.retail_price_label') }} {{ product()!.price.toFixed(2) }} €
+                      </span>
+                    </div>
+
+                    <div class="flex items-baseline gap-3">
+                      <span class="text-3xl sm:text-4xl font-bold text-amber-950 font-serif">
+                        {{ product()!.wholesalePrice!.toFixed(2) }} €
+                      </span>
+                      <span class="text-xs text-stone-600 font-medium">{{ ts.t('wholesale.per_unit') }}</span>
+                    </div>
+
+                    <div class="pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs text-amber-900 font-semibold">
+                      <span>{{ ts.t('wholesale.carton_unit', { qty: product()!.wholesaleMinQty || 12 }) }}</span>
+                      <span class="font-bold">
+                        {{ ts.t('wholesale.carton_total', { total: (product()!.wholesalePrice! * (product()!.wholesaleMinQty || 12)).toFixed(2) }) }}
+                      </span>
+                    </div>
+                  </div>
+                } @else {
+                  <!-- Bloc Prix Détail Public Normal -->
+                  <div class="space-y-1">
+                    <div class="flex items-baseline gap-3">
+                      <span class="text-3xl font-semibold text-stone-900">
+                        {{ product()!.price.toFixed(2) }} €
+                      </span>
+                      <span class="text-xs text-stone-400 font-light">{{ ts.t('detail.tax_included') }}</span>
+                    </div>
+
+                    <!-- Invitation discrète vers l'espace grossiste pour les visiteurs -->
+                    <div class="pt-1">
+                      <a routerLink="/wholesale-register" class="inline-flex items-center gap-1 text-xs text-amber-900/80 hover:text-amber-900 hover:underline font-medium transition-colors">
+                        <span>{{ ts.t('wholesale.join_cta') }}</span>
+                      </a>
+                    </div>
+                  </div>
+                }
 
                 <!-- Disponibilité & Stock -->
                 <div class="flex items-center gap-2 text-xs">
@@ -177,21 +223,28 @@ import { TranslationService } from '../../services/translation.service';
                   <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
 
                     <!-- Quantité Stepper -->
-                    <div class="flex items-center justify-between rounded-xl border border-stone-300 bg-stone-50 px-3 py-2 w-full sm:w-36">
+                    <div class="flex items-center justify-between rounded-xl border border-stone-300 bg-stone-50 px-3 py-2 w-full sm:w-44">
                       <button
                         type="button"
                         (click)="decrementQuantity()"
-                        [disabled]="quantity() <= 1"
-                        class="h-8 w-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-white disabled:opacity-40 transition-colors"
+                        [disabled]="quantity() <= getStep()"
+                        class="h-8 w-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-white disabled:opacity-40 transition-colors font-bold"
                       >
                         –
                       </button>
-                      <span class="text-sm font-semibold text-stone-900">{{ quantity() }}</span>
+                      <div class="text-center">
+                        <span class="text-sm font-bold text-stone-900 block">{{ quantity() }}</span>
+                        @if (isWholesaleProduct()) {
+                          <span class="text-[9px] text-amber-800 font-semibold uppercase block">
+                            {{ quantity() / getStep() }} carton(s)
+                          </span>
+                        }
+                      </div>
                       <button
                         type="button"
                         (click)="incrementQuantity()"
-                        [disabled]="quantity() >= (product()!.stock || 99)"
-                        class="h-8 w-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-white disabled:opacity-40 transition-colors"
+                        [disabled]="quantity() + getStep() > (product()!.stock || 999)"
+                        class="h-8 w-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-white disabled:opacity-40 transition-colors font-bold"
                       >
                         +
                       </button>
@@ -204,7 +257,7 @@ import { TranslationService } from '../../services/translation.service';
                       [disabled]="product()!.status === 'RUPTURE' || product()!.stock === 0"
                       class="flex-1 rounded-xl py-3.5 px-6 text-sm sm:text-base font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
                       [ngClass]="{
-                        'bg-rose-600 text-white hover:bg-rose-700 active:scale-95': product()!.status !== 'RUPTURE' && product()!.stock > 0 && !addedSuccess(),
+                        'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product()!.status !== 'RUPTURE' && product()!.stock > 0 && !addedSuccess(),
                         'bg-emerald-600 text-white shadow-emerald-900/30 ring-emerald-400/50': addedSuccess(),
                         'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product()!.status === 'RUPTURE' || product()!.stock === 0
                       }"
@@ -220,7 +273,9 @@ import { TranslationService } from '../../services/translation.service';
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                        <span class="text-white font-bold">{{ ts.t('detail.add_to_cart_price', { total: (product()!.price * quantity()).toFixed(2) }) }}</span>
+                        <span class="text-white font-bold">
+                          {{ ts.t('detail.add_to_cart_price', { total: getEffectiveTotal() }) }}
+                        </span>
                       }
                     </button>
                   </div>
@@ -299,6 +354,7 @@ export class ProductDetailComponent implements OnInit {
   readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);
+  readonly authService = inject(AuthService);
   readonly ts = inject(TranslationService);
 
   readonly product = signal<ProductDTO | null>(null);
@@ -306,6 +362,11 @@ export class ProductDetailComponent implements OnInit {
   readonly quantity = signal<number>(1);
   readonly addedSuccess = signal<boolean>(false);
   readonly activeImage = signal<string>('');
+
+  readonly isWholesaleProduct = computed(() => {
+    const prod = this.product();
+    return !!(this.authService.isWholesale() && prod && prod.wholesalePrice);
+  });
 
   readonly galleryImages = computed(() => {
     const prod = this.product();
@@ -348,19 +409,39 @@ export class ProductDetailComponent implements OnInit {
       next: (prod) => {
         this.product.set(prod);
         this.activeImage.set(this.productService.getProductImageUrl(prod));
-        this.quantity.set(1);
+        const initialQty = (this.authService.isWholesale() && prod?.wholesalePrice)
+          ? (prod.wholesaleMinQty || 12)
+          : 1;
+        this.quantity.set(initialQty);
         this.loading.set(false);
       },
       error: () => {
-        // Fallback: chercher dans les produits déjà chargés
         const existing = this.productService.products().find((p) => p.id === id);
         if (existing) {
           this.product.set(existing);
           this.activeImage.set(this.productService.getProductImageUrl(existing));
+          const initialQty = (this.authService.isWholesale() && existing.wholesalePrice)
+            ? (existing.wholesaleMinQty || 12)
+            : 1;
+          this.quantity.set(initialQty);
         }
         this.loading.set(false);
       }
     });
+  }
+
+  getStep(): number {
+    if (this.isWholesaleProduct()) {
+      return this.product()?.wholesaleMinQty || 12;
+    }
+    return 1;
+  }
+
+  getEffectiveTotal(): string {
+    const prod = this.product();
+    if (!prod) return '0.00';
+    const unitPrice = this.isWholesaleProduct() ? prod.wholesalePrice! : prod.price;
+    return (unitPrice * this.quantity()).toFixed(2);
   }
 
   isFavorite(): boolean {
@@ -376,15 +457,17 @@ export class ProductDetailComponent implements OnInit {
   }
 
   incrementQuantity(): void {
-    const max = this.product()?.stock || 99;
-    if (this.quantity() < max) {
-      this.quantity.update((q) => q + 1);
+    const max = this.product()?.stock || 999;
+    const step = this.getStep();
+    if (this.quantity() + step <= max) {
+      this.quantity.update((q) => q + step);
     }
   }
 
   decrementQuantity(): void {
-    if (this.quantity() > 1) {
-      this.quantity.update((q) => q - 1);
+    const step = this.getStep();
+    if (this.quantity() - step >= step) {
+      this.quantity.update((q) => q - step);
     }
   }
 
@@ -392,7 +475,8 @@ export class ProductDetailComponent implements OnInit {
     const prod = this.product();
     if (!prod || prod.status === 'RUPTURE' || prod.stock === 0) return;
 
-    this.cartService.addToCart(prod, this.quantity());
+    const isWholesale = this.isWholesaleProduct();
+    this.cartService.addToCart(prod, this.quantity(), isWholesale);
     this.addedSuccess.set(true);
     setTimeout(() => {
       this.addedSuccess.set(false);

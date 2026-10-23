@@ -71,6 +71,14 @@ import { HealthService } from '../../services/health.service';
               >
                 Commandes
               </a>
+              <a
+                routerLink="/admin/wholesale"
+                routerLinkActive="bg-stone-900 text-white shadow-sm"
+                class="rounded-xl px-3 sm:px-4 py-2 text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all flex items-center gap-1"
+              >
+                <span>Grossistes</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900">B2B</span>
+              </a>
             </nav>
 
             <!-- Profil Admin & Actions -->
@@ -141,6 +149,13 @@ import { HealthService } from '../../services/health.service';
               class="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100 whitespace-nowrap"
             >
               Commandes
+            </a>
+            <a
+              routerLink="/admin/wholesale"
+              routerLinkActive="bg-stone-900 text-white"
+              class="rounded-lg px-3 py-1.5 text-stone-600 hover:bg-stone-100 whitespace-nowrap"
+            >
+              Grossistes B2B
             </a>
           </div>
 

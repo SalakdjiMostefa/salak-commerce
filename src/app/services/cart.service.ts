@@ -10,19 +10,20 @@ export class CartService {
   readonly FREE_SHIPPING_THRESHOLD = 50;
   readonly STANDARD_SHIPPING_FEE = 4.90;
 
-  // Signal principal stockant les articles
   readonly items = signal<CartItem[]>(this.loadCartFromStorage());
-
-  // Signal indiquant le dernier produit ajouté pour notifications UX
   readonly lastAddedProduct = signal<{ product: ProductDTO; timestamp: number } | null>(null);
 
-  // Computeds réactifs modernes
   readonly totalCount = computed(() =>
     this.items().reduce((acc, item) => acc + item.quantity, 0)
   );
 
   readonly subtotal = computed(() =>
-    this.items().reduce((acc, item) => acc + item.product.price * item.quantity, 0)
+    this.items().reduce((acc, item) => {
+      const price = (item.isWholesale && item.product.wholesalePrice)
+        ? item.product.wholesalePrice
+        : item.product.price;
+      return acc + (price * item.quantity);
+    }, 0)
   );
 
   readonly shippingFee = computed(() => {
@@ -48,28 +49,30 @@ export class CartService {
   readonly isEmpty = computed(() => this.items().length === 0);
 
   constructor() {
-    // Synchronisation automatique et réactive vers localStorage
     effect(() => {
       this.saveCartToStorage(this.items());
     });
   }
 
-  /**
-   * Ajoute un produit au panier ou incrémente sa quantité
-   */
-  addToCart(product: ProductDTO, quantity: number = 1): void {
+  getItemPrice(item: CartItem): number {
+    if (item.isWholesale && item.product.wholesalePrice) {
+      return item.product.wholesalePrice;
+    }
+    return item.product.price;
+  }
+
+  addToCart(product: ProductDTO, quantity: number = 1, isWholesale: boolean = false): void {
     if (quantity <= 0) return;
 
     this.items.update((currentItems) => {
       const existingIndex = currentItems.findIndex(
-        (item) => item.product.id === product.id
+        (item) => item.product.id === product.id && !!item.isWholesale === !!isWholesale
       );
 
       if (existingIndex > -1) {
         return currentItems.map((item, index) => {
           if (index === existingIndex) {
             const newQty = item.quantity + quantity;
-            // Respect de la limite du stock si spécifié
             const finalQty = product.stock ? Math.min(newQty, product.stock) : newQty;
             return { ...item, quantity: finalQty };
           }
@@ -77,25 +80,22 @@ export class CartService {
         });
       } else {
         const initialQty = product.stock ? Math.min(quantity, product.stock) : quantity;
-        return [...currentItems, { product, quantity: initialQty }];
+        return [...currentItems, { product, quantity: initialQty, isWholesale }];
       }
     });
 
     this.lastAddedProduct.set({ product, timestamp: Date.now() });
   }
 
-  /**
-   * Met à jour la quantité exacte d'un article
-   */
-  updateQuantity(productId: number, quantity: number): void {
+  updateQuantity(productId: number, quantity: number, isWholesale?: boolean): void {
     if (quantity <= 0) {
-      this.removeFromCart(productId);
+      this.removeFromCart(productId, isWholesale);
       return;
     }
 
     this.items.update((currentItems) =>
       currentItems.map((item) => {
-        if (item.product.id === productId) {
+        if (item.product.id === productId && (isWholesale === undefined || !!item.isWholesale === !!isWholesale)) {
           const maxStock = item.product.stock;
           const safeQty = maxStock ? Math.min(quantity, maxStock) : quantity;
           return { ...item, quantity: safeQty };
@@ -105,38 +105,27 @@ export class CartService {
     );
   }
 
-  /**
-   * Supprime un article du panier
-   */
-  removeFromCart(productId: number): void {
+  removeFromCart(productId: number, isWholesale?: boolean): void {
     this.items.update((currentItems) =>
-      currentItems.filter((item) => item.product.id !== productId)
+      currentItems.filter((item) => 
+        !(item.product.id === productId && (isWholesale === undefined || !!item.isWholesale === !!isWholesale))
+      )
     );
   }
 
-  /**
-   * Vide complètement le panier
-   */
   clearCart(): void {
     this.items.set([]);
   }
 
-  /**
-   * Vérifie si un produit est déjà présent dans le panier
-   */
   hasItem(productId: number): boolean {
     return this.items().some((item) => item.product.id === productId);
   }
 
-  /**
-   * Récupère la quantité actuelle d'un produit dans le panier
-   */
   getItemQuantity(productId: number): number {
     const found = this.items().find((item) => item.product.id === productId);
     return found ? found.quantity : 0;
   }
 
-  // Persistance localStorage sécurisée
   private loadCartFromStorage(): CartItem[] {
     try {
       if (typeof window === 'undefined' || !window.localStorage) {
@@ -155,7 +144,7 @@ export class CartService {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items));
       }
     } catch {
-      // Ignorer les erreurs potentielles de quota
+      // Ignorer
     }
   }
 }

@@ -106,9 +106,16 @@ import { environment } from '../../../../environments/environment';
                     {{ product.brand }}
                   </td>
 
-                  <!-- Prix -->
-                  <td class="py-3 px-6 font-bold text-stone-900">
-                    {{ product.price.toFixed(2) }} €
+                  <!-- Prix Détail & Gros -->
+                  <td class="py-3 px-6">
+                    <div class="font-bold text-stone-900">{{ product.price.toFixed(2) }} €</div>
+                    @if (product.wholesalePrice) {
+                      <div class="inline-flex items-center gap-1 rounded bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 text-[10px] font-semibold text-amber-900 mt-1">
+                        <span>Gros:</span>
+                        <span class="font-bold">{{ product.wholesalePrice.toFixed(2) }} €</span>
+                        <span class="text-stone-500">(x{{ product.wholesaleMinQty || 12 }})</span>
+                      </div>
+                    }
                   </td>
 
                   <!-- Stock -->
@@ -305,6 +312,41 @@ import { environment } from '../../../../environments/environment';
                 </div>
               </div>
 
+              <!-- Section Tarification B2B & Vente en Gros -->
+              <div class="rounded-2xl bg-amber-50/60 p-4 border border-amber-200/80 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-amber-900 text-xs font-bold">✦ TARIF GROSSISTE & REVENDEURS (B2B)</span>
+                  <span class="text-[10px] text-stone-500 font-normal">(Visible uniquement par les comptes grossistes validés)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">
+                      Prix de Vente en Gros (€ / unité)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      formControlName="wholesalePrice"
+                      placeholder="Laisser vide si pas de vente en gros"
+                      class="w-full rounded-xl border border-stone-300 bg-white p-2.5 text-xs text-stone-900 focus:border-stone-900 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">
+                      Unités par carton (Conditionnement)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      formControlName="wholesaleMinQty"
+                      placeholder="12"
+                      class="w-full rounded-xl border border-stone-300 bg-white p-2.5 text-xs text-stone-900 focus:border-stone-900 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <!-- Image Upload -->
               <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
@@ -497,6 +539,8 @@ export class AdminProductsComponent implements OnInit {
       brand: ['Maison SALAKOMERCE', Validators.required],
       description: ['', [Validators.required, Validators.minLength(5)]],
       price: [29.00, [Validators.required, Validators.min(0)]],
+      wholesalePrice: [null, [Validators.min(0)]],
+      wholesaleMinQty: [12, [Validators.min(1)]],
       stock: [20, [Validators.required, Validators.min(0)]],
       category: [1, Validators.required],
       status: ['EN_STOCK', Validators.required],
@@ -513,6 +557,8 @@ export class AdminProductsComponent implements OnInit {
       brand: 'Maison SALAKOMERCE',
       description: '',
       price: 35.00,
+      wholesalePrice: null,
+      wholesaleMinQty: 12,
       stock: 25,
       category: firstCat,
       status: 'NOUVEAU',
@@ -537,6 +583,8 @@ export class AdminProductsComponent implements OnInit {
       brand: product.brand,
       description: product.description,
       price: product.price,
+      wholesalePrice: product.wholesalePrice ?? null,
+      wholesaleMinQty: product.wholesaleMinQty ?? 12,
       stock: product.stock,
       category: catVal,
       status: product.status,
@@ -620,6 +668,8 @@ export class AdminProductsComponent implements OnInit {
       brand: formVal.brand,
       description: formVal.description,
       price: Number(formVal.price),
+      wholesalePrice: formVal.wholesalePrice ? Number(formVal.wholesalePrice) : null,
+      wholesaleMinQty: formVal.wholesaleMinQty ? Number(formVal.wholesaleMinQty) : 12,
       stock: Number(formVal.stock),
       category: formVal.category,
       status: formVal.status as ProductStatus,

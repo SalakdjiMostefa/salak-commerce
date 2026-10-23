@@ -5,6 +5,7 @@ import { ProductDTO } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { ProductService } from '../../services/product.service';
+import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 
 @Component({
@@ -17,8 +18,14 @@ import { TranslationService } from '../../services/translation.service';
     >
       <!-- Image & Badges Container -->
       <div class="relative aspect-square w-full overflow-hidden bg-stone-100/60">
-        <!-- Badge Statut -->
-        <div class="absolute left-3 top-3 z-10 flex flex-col gap-1">
+        <!-- Badges Statut & Grossiste -->
+        <div class="absolute left-3 rtl:left-auto rtl:right-3 top-3 z-10 flex flex-col gap-1 items-start">
+          @if (authService.isWholesale() && product.wholesalePrice) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-900 text-white px-2.5 py-1 text-[10px] font-bold shadow-sm backdrop-blur-sm">
+              <span>✦</span> {{ ts.t('wholesale.approved_badge') }}
+            </span>
+          }
+
           @switch (product.status) {
             @case ('NOUVEAU') {
               <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20 shadow-sm backdrop-blur-sm">
@@ -45,7 +52,7 @@ import { TranslationService } from '../../services/translation.service';
           type="button"
           (click)="onToggleFavorite($event)"
           [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'"
-          class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-stone-600 shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110 active:scale-95"
+          class="absolute right-3 rtl:right-auto rtl:left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-stone-600 shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110 active:scale-95"
           [class.text-rose-600]="isFavorite()"
         >
           <svg
@@ -82,7 +89,7 @@ import { TranslationService } from '../../services/translation.service';
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
             class="w-full rounded-xl py-3 px-4 text-xs sm:text-sm font-bold tracking-normal shadow-xl transition-all flex items-center justify-center gap-2 select-none"
             [ngClass]="{
-              'bg-rose-600 text-white hover:bg-rose-700 active:scale-95': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
+              'bg-stone-900 text-white hover:bg-stone-800 active:scale-95': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
               'bg-emerald-600 text-white shadow-emerald-900/30 ring-emerald-400/50': addedAnimation(),
               'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
             }"
@@ -98,14 +105,16 @@ import { TranslationService } from '../../services/translation.service';
               <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span class="text-white font-bold">{{ ts.t('common.add_to_cart') }}</span>
+              <span class="text-white font-bold">
+                {{ authService.isWholesale() && product.wholesalePrice ? '+ 1 Carton (' + (product.wholesaleMinQty || 12) + ')' : ts.t('common.add_to_cart') }}
+              </span>
             }
           </button>
         </div>
       </div>
 
       <!-- Informations Produit -->
-      <div class="flex flex-1 flex-col p-4 sm:p-5">
+      <div class="flex flex-1 flex-col p-4 sm:p-5 text-left rtl:text-right">
         <!-- Marque & Note -->
         <div class="mb-1 flex items-center justify-between text-xs text-stone-500">
           <span class="font-medium tracking-wider uppercase text-stone-400 text-[11px]">{{ product.brand }}</span>
@@ -120,7 +129,7 @@ import { TranslationService } from '../../services/translation.service';
         </div>
 
         <!-- Titre du Produit -->
-        <h3 class="mb-1 text-sm sm:text-base font-medium text-stone-900 group-hover:text-rose-950 transition-colors line-clamp-1">
+        <h3 class="mb-1 text-sm sm:text-base font-medium text-stone-900 group-hover:text-amber-900 transition-colors line-clamp-1">
           <a [routerLink]="['/product', product.id]">
             {{ product.name }}
           </a>
@@ -132,21 +141,40 @@ import { TranslationService } from '../../services/translation.service';
         </p>
 
         <!-- Prix & Bouton Mobile -->
-        <div class="mt-auto flex items-center justify-between pt-2 border-t border-stone-100">
+        <div class="mt-auto flex items-end justify-between pt-2 border-t border-stone-100">
           <div>
-            <span class="text-base sm:text-lg font-bold text-stone-900">
-              {{ product.price.toFixed(2) }} €
-            </span>
+            @if (authService.isWholesale() && product.wholesalePrice) {
+              <!-- Affichage EXCLUSIF pour grossistes connectés -->
+              <div class="flex flex-col">
+                <span class="text-[10px] text-stone-400 line-through">
+                  {{ ts.t('wholesale.retail_price_label') }} {{ product.price.toFixed(2) }} €
+                </span>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-base sm:text-lg font-bold text-amber-900">
+                    {{ product.wholesalePrice.toFixed(2) }} €
+                  </span>
+                  <span class="text-[10px] text-stone-500 font-medium">{{ ts.t('wholesale.per_unit') }}</span>
+                </div>
+                <span class="text-[9.5px] font-semibold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200/60 mt-0.5 inline-block">
+                  {{ ts.t('wholesale.carton_unit', { qty: product.wholesaleMinQty || 12 }) }}
+                </span>
+              </div>
+            } @else {
+              <!-- Affichage CLIENT NORMAL / DÉTAIL -->
+              <span class="text-base sm:text-lg font-bold text-stone-900">
+                {{ product.price.toFixed(2) }} €
+              </span>
+            }
           </div>
 
-          <!-- Bouton Ajout Panier Mobile (visible sur petits écrans < 640px) -->
+          <!-- Bouton Ajout Panier Mobile (< 640px) -->
           <button
             type="button"
             (click)="onAddToCart($event)"
             [disabled]="product.status === 'RUPTURE' || product.stock === 0"
             class="flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 shadow-sm"
             [ngClass]="{
-              'bg-rose-600 text-white hover:bg-rose-700': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
+              'bg-stone-900 text-white hover:bg-stone-800': product.status !== 'RUPTURE' && product.stock > 0 && !addedAnimation(),
               'bg-emerald-600 text-white ring-emerald-400/50': addedAnimation(),
               'bg-gray-200 text-gray-500 font-semibold border border-gray-300 cursor-not-allowed': product.status === 'RUPTURE' || product.stock === 0
             }"
@@ -163,7 +191,9 @@ import { TranslationService } from '../../services/translation.service';
               <svg class="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              <span class="text-white font-bold">{{ ts.t('common.add_to_cart') }}</span>
+              <span class="text-white font-bold">
+                {{ authService.isWholesale() && product.wholesalePrice ? '+' + (product.wholesaleMinQty || 12) : ts.t('common.add_to_cart') }}
+              </span>
             }
           </button>
         </div>
@@ -176,6 +206,7 @@ export class ProductCardComponent {
 
   readonly ts = inject(TranslationService);
   readonly productService = inject(ProductService);
+  readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);
 
@@ -199,7 +230,10 @@ export class ProductCardComponent {
       return;
     }
 
-    this.cartService.addToCart(this.product, 1);
+    const isWholesale = this.authService.isWholesale() && !!this.product.wholesalePrice;
+    const qty = isWholesale ? (this.product.wholesaleMinQty || 12) : 1;
+
+    this.cartService.addToCart(this.product, qty, isWholesale);
     this.addedAnimation.set(true);
     setTimeout(() => {
       this.addedAnimation.set(false);

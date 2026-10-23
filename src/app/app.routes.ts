@@ -49,6 +49,12 @@ export const routes: Routes = [
     redirectTo: 'login'
   },
   {
+    path: 'wholesale-register',
+    loadComponent: () =>
+      import('./pages/wholesale-register/wholesale-register.component').then((m) => m.WholesaleRegisterComponent),
+    title: 'Espace Grossiste & Revendeur — SALAKOMERCE'
+  },
+  {
     path: 'admin',
     canActivate: [adminGuard],
     loadComponent: () =>
@@ -82,6 +88,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/orders/admin-orders.component').then((m) => m.AdminOrdersComponent),
         title: 'Administration — Gestion des Commandes'
+      },
+      {
+        path: 'wholesale',
+        loadComponent: () =>
+          import('./pages/admin/wholesale/admin-wholesale.component').then((m) => m.AdminWholesaleComponent),
+        title: 'Administration — Comptes Grossistes'
       }
     ]
   },

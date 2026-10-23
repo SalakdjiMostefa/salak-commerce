@@ -99,6 +99,16 @@ import { TranslationService } from '../../services/translation.service';
           >
             {{ ts.t('nav.favorites') }}
           </a>
+          @if (!authService.isAdmin()) {
+            <a
+              routerLink="/wholesale-register"
+              routerLinkActive="text-amber-950 font-semibold bg-amber-100/80 ring-1 ring-amber-300"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100/80 transition-all border border-amber-200/70 shadow-xs"
+            >
+              <span class="text-amber-600 text-[11px]">✦</span>
+              <span>{{ authService.isWholesale() ? ts.t('nav.wholesale_pro') : ts.t('nav.wholesale_space') }}</span>
+            </a>
+          }
           @if (authService.isAdmin()) {
             <a
               routerLink="/admin/dashboard"
@@ -276,6 +286,14 @@ import { TranslationService } from '../../services/translation.service';
                         <span class="inline-flex items-center gap-1 font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-md">
                           <span>✦</span> {{ ts.t('nav.admin_studio') }}
                         </span>
+                      } @else if (authService.isWholesale()) {
+                        <span class="inline-flex items-center gap-1 font-bold text-amber-950 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-300">
+                          <span>✦</span> {{ ts.t('nav.wholesale_pro') }}
+                        </span>
+                      } @else if (authService.isWholesalePending()) {
+                        <span class="inline-flex items-center gap-1 font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          <span>⏳</span> Pro en validation
+                        </span>
                       } @else {
                         <span class="inline-flex items-center gap-1 font-semibold text-stone-700 bg-white px-2 py-0.5 rounded-md border border-stone-200">
                           <span>✦</span> {{ ts.t('nav.member_privilege') }}
@@ -340,6 +358,20 @@ import { TranslationService } from '../../services/translation.service';
                         {{ cartService.totalCount() }} {{ ts.t('nav.items_suffix') }}
                       </span>
                     </a>
+
+                    @if (!authService.isAdmin()) {
+                      <a
+                        routerLink="/wholesale-register"
+                        (click)="userMenuOpen.set(false)"
+                        class="flex items-center justify-between p-2 rounded-xl text-amber-900 bg-amber-50/70 hover:bg-amber-100/80 transition-colors border border-amber-200/50"
+                      >
+                        <span class="flex items-center gap-2 font-medium">
+                          <span class="text-amber-600">✦</span>
+                          <span>{{ authService.isWholesale() ? ts.t('nav.wholesale_pro') : ts.t('nav.wholesale_space') }}</span>
+                        </span>
+                        <span class="text-[10px] font-bold text-amber-900 bg-amber-200/70 px-1.5 py-0.5 rounded">B2B</span>
+                      </a>
+                    }
                   </div>
 
                   <!-- Déconnexion -->
@@ -506,6 +538,19 @@ import { TranslationService } from '../../services/translation.service';
                 {{ cartService.totalCount() }} • {{ cartService.total().toFixed(2) }} €
               </span>
             </a>
+            @if (!authService.isAdmin()) {
+              <a
+                routerLink="/wholesale-register"
+                (click)="mobileMenuOpen.set(false)"
+                class="flex items-center justify-between text-xs font-semibold text-amber-900 bg-amber-50/80 hover:bg-amber-100 py-2.5 px-3 rounded-xl border border-amber-200/60 transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <span class="text-amber-600">✦</span>
+                  <span>{{ authService.isWholesale() ? ts.t('nav.wholesale_pro') : ts.t('nav.wholesale_space') }}</span>
+                </span>
+                <span class="text-[10px] font-bold bg-amber-800 text-white px-2 py-0.5 rounded-full">B2B</span>
+              </a>
+            }
             @if (authService.isAdmin()) {
               <div class="pt-2 border-t border-stone-100">
                 <a

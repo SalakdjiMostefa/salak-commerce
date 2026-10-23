@@ -15,6 +15,8 @@ export interface ProductDTO {
   brand: string;
   description: string;
   price: number;
+  wholesalePrice?: number | null;
+  wholesaleMinQty?: number | null;
   stock: number;
   category: CategoryDTO | number | string;
   images: ProductImageDTO[];
@@ -27,6 +29,8 @@ export interface CreateProductDTO {
   brand: string;
   description: string;
   price: number;
+  wholesalePrice?: number | null;
+  wholesaleMinQty?: number | null;
   stock: number;
   category: number | string;
   images?: ProductImageDTO[];
