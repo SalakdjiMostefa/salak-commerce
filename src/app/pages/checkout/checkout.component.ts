@@ -229,17 +229,17 @@ export const ALGERIA_WILAYAS = [
 
                     <div>
                       <label class="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
-                        Adresse Email <span class="text-rose-500">*</span>
+                        Adresse Email <span class="text-stone-400 font-normal lowercase">(facultatif)</span>
                       </label>
                       <input
                         type="email"
                         formControlName="email"
-                        placeholder="mohamed@exemple.com"
+                        placeholder="Ex: mohamed@exemple.com"
                         class="w-full rounded-xl border border-stone-300 bg-stone-50/50 px-4 py-2.5 text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-none transition-all"
                         [class.border-rose-400]="isFieldInvalid('email')"
                       />
                       @if (isFieldInvalid('email')) {
-                        <p class="mt-1 text-xs text-rose-600">Veuillez renseigner une adresse email valide.</p>
+                        <p class="mt-1 text-xs text-rose-600">Veuillez renseigner une adresse email valide (ou laisser vide).</p>
                       }
                     </div>
                   </div>
@@ -440,19 +440,24 @@ export const ALGERIA_WILAYAS = [
                   </div>
                 </div>
 
-                <!-- Erreur de soumission -->
+                <!-- Erreur de validation ou de soumission -->
                 @if (submitError()) {
-                  <div class="rounded-xl bg-rose-50 p-4 text-xs text-rose-700 border border-rose-200">
-                    {{ submitError() }}
+                  <div class="rounded-2xl bg-rose-50 p-4 text-xs sm:text-sm text-rose-800 border-2 border-rose-300 flex items-start gap-3 shadow-sm">
+                    <span class="text-xl">⚠️</span>
+                    <div class="flex-1">
+                      <div class="font-bold text-rose-950">Champs requis incomplets :</div>
+                      <div class="mt-0.5 leading-relaxed">{{ submitError() }}</div>
+                    </div>
                   </div>
                 }
 
                 <!-- Bouton Confirmer la Commande -->
                 <div class="pt-4">
                   <button
-                    type="submit"
+                    type="button"
+                    (click)="onSubmitOrder()"
                     [disabled]="isSubmitting() || cartService.isEmpty()"
-                    class="w-full rounded-2xl bg-stone-900 hover:bg-stone-800 py-4 px-6 text-sm sm:text-base font-bold text-white shadow-xl disabled:opacity-50 transition-all flex items-center justify-center gap-3 active:scale-95 select-none"
+                    class="w-full rounded-2xl bg-stone-900 hover:bg-stone-800 py-4 px-6 text-sm sm:text-base font-bold text-white shadow-xl disabled:opacity-50 transition-all flex items-center justify-center gap-3 active:scale-95 select-none cursor-pointer"
                   >
                     @if (isSubmitting()) {
                       <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -475,7 +480,7 @@ export const ALGERIA_WILAYAS = [
                   </button>
 
                   <p class="text-center text-[11px] text-stone-500 mt-2.5">
-                    🔒 Commande sans engagement de paiement immédiat • Paiement sécurisé lors de la livraison
+                    🔒 Commande sans paiement en ligne • Paiement en espèces lors de la livraison
                   </p>
                 </div>
 
@@ -590,8 +595,8 @@ export class CheckoutComponent implements OnInit {
 
     this.checkoutForm = this.fb.group({
       customerName: [user?.fullName || '', [Validators.required, Validators.minLength(2)]],
-      email: [user?.email || '', [Validators.required, Validators.email]],
-      phone: [user?.phone || '', [Validators.required, Validators.pattern('^[0-9+() -]{8,20}$')]],
+      email: [user?.email || '', [Validators.email]], // Email facultatif pour le client
+      phone: [user?.phone || '', [Validators.required, Validators.minLength(8)]], // Minimum 8 chiffres
       wilaya: ['16 - Alger', [Validators.required]],
       commune: ['', [Validators.required, Validators.minLength(2)]],
       address: [user?.address || '', [Validators.required, Validators.minLength(3)]]
@@ -599,13 +604,27 @@ export class CheckoutComponent implements OnInit {
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const field = this.checkoutForm.get(fieldName);
+    const field = this.checkoutForm?.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
   onSubmitOrder(): void {
+    console.log('--- Tentative de soumission commande ---');
+    console.log('Valeurs du formulaire:', this.checkoutForm.value);
+    console.log('Formulaire invalide ?', this.checkoutForm.invalid);
+
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
+      const missing: string[] = [];
+      if (this.checkoutForm.get('customerName')?.invalid) missing.push('Nom et Prénom');
+      if (this.checkoutForm.get('phone')?.invalid) missing.push('Numéro de téléphone');
+      if (this.checkoutForm.get('commune')?.invalid) missing.push('Commune / Ville');
+      if (this.checkoutForm.get('address')?.invalid) missing.push('Adresse de livraison');
+      if (this.checkoutForm.get('email')?.invalid) missing.push('Format de l\'email');
+
+      const msg = `Veuillez compléter les informations obligatoires : ${missing.join(', ')}.`;
+      console.warn(msg);
+      this.submitError.set(msg);
       return;
     }
 
@@ -631,9 +650,14 @@ export class CheckoutComponent implements OnInit {
       unitPrice: item.product.price
     }));
 
+    // Si le client n'a pas renseigné d'email (courant en Algérie pour le COD), en générer un pour satisfaire le backend
+    const safeEmail = (formVal.email && formVal.email.trim().length > 0)
+      ? formVal.email.trim()
+      : `${formVal.phone.replace(/[^0-9]/g, '') || 'client'}@salakommerce.dz`;
+
     const orderPayload: CreateOrderDTO = {
       customerName: formVal.customerName.trim(),
-      email: formVal.email.trim(),
+      email: safeEmail,
       phone: formVal.phone.trim(),
       address: fullFormattedAddress,
       items: items,
@@ -642,13 +666,17 @@ export class CheckoutComponent implements OnInit {
       paymentMethod: this.selectedPayment()
     };
 
+    console.log('Payload envoyé au backend:', orderPayload);
+
     this.orderService.createOrder(orderPayload).subscribe({
       next: (created) => {
+        console.log('Réponse backend commande:', created);
         this.isSubmitting.set(false);
         this.orderSuccess.set(created);
         this.cartService.clearCart();
       },
       error: (err) => {
+        console.error('Erreur API backend createOrder:', err);
         this.isSubmitting.set(false);
         // En cas d'indisponibilité du serveur local (ex: backend non lancé lors du dev), générer une confirmation locale
         if (err.status === 0 || err.status === 404) {
@@ -668,7 +696,7 @@ export class CheckoutComponent implements OnInit {
           this.cartService.clearCart();
         } else {
           this.submitError.set(
-            'Impossible de valider votre commande actuellement. Veuillez vérifier vos informations ou réessayer ultérieurement.'
+            'Impossible de valider votre commande actuellement. ' + (err.error?.message || 'Vérifiez votre connexion.')
           );
         }
       }
